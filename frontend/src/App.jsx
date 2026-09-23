@@ -14,7 +14,17 @@ import Settings from "./pages/Settings";
 import AddCustomer from "./pages/AddCustomer";
 import Sidebar from "./components/Sidebar";
 
-const withSidebar = (page) => <Sidebar>{page}</Sidebar>;
+const ProtectedRoute = ({ children }) => {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return <Sidebar>{children}</Sidebar>;
+};
+
+const withSidebar = (page) => <ProtectedRoute>{page}</ProtectedRoute>;
 
 function App() {
   return (

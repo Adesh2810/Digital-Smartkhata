@@ -1,7 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  FiActivity,
-  FiAward,
   FiBarChart2,
   FiBriefcase,
   FiCalendar,
@@ -18,6 +16,7 @@ import {
   FiPhone,
   FiPlus,
   FiRefreshCw,
+  FiSave,
   FiSearch,
   FiTrash2,
   FiUpload,
@@ -28,7 +27,6 @@ import "./Staff.css";
 import {
   addStaff,
   addStaffAttendance,
-  deleteStaff,
   getStaff,
   getStaffHistory,
   getStaffSummary,
@@ -59,14 +57,9 @@ const hrmsModules = [
   { id: "dashboard", label: "Dashboard", target: "staff-dashboard" },
   { id: "registration", label: "Staff Registration", target: "staff-registration" },
   { id: "list", label: "Staff List", target: "staff-list-section" },
-  { id: "profile", label: "Staff Profile", target: "staff-profile-section" },
+  { id: "profile", label: "Staff Details", target: "staff-profile-section" },
   { id: "attendance", label: "Attendance", target: "staff-attendance-section" },
   { id: "salary", label: "Salary", target: "staff-salary-section" },
-  { id: "advance", label: "Advance", target: "staff-advance-section" },
-  { id: "leave", label: "Leave", target: "staff-leave-section" },
-  { id: "performance", label: "Performance", target: "staff-performance-section" },
-  { id: "documents", label: "Documents", target: "staff-documents-section" },
-  { id: "emergency", label: "Emergency Contact", target: "staff-emergency-section" },
   { id: "reports", label: "Reports", target: "staff-reports-section" },
 ];
 
@@ -98,14 +91,161 @@ const paymentHistory = [
   { date: "15 Jul", amount: 5000, mode: "UPI" },
 ];
 
-const leaveStats = [
-  { label: "Casual Leave", value: 3 },
-  { label: "Medical Leave", value: 2 },
-  { label: "Paid Leave", value: 5 },
-  { label: "Unpaid Leave", value: 1 },
+const documents = ["Aadhar", "PAN", "Photo"];
+const localStaffKey = "smartkhata-staff";
+const localStaffDocumentsKey = "smartkhata-staff-documents";
+
+const demoStaff = [
+  {
+    id: "demo-001",
+    staff_id: "STF001",
+    name: "Rahul Patil",
+    mobile: "9876543210",
+    email: "rahul.patil@example.com",
+    department: "Sales",
+    role: "Sales Executive",
+    salary: 28000,
+    joining_date: "2024-04-15",
+    status: "Active",
+    address: "Wakad, Pune",
+    note: "Handles retail customer visits.",
+  },
+  {
+    id: "demo-002",
+    staff_id: "STF002",
+    name: "Priya Sharma",
+    mobile: "9765432109",
+    email: "priya.sharma@example.com",
+    department: "Accounts",
+    role: "Accounts Assistant",
+    salary: 32000,
+    joining_date: "2023-11-08",
+    status: "Active",
+    address: "Hinjwadi, Pune",
+    note: "Manages daily ledger entries and payments.",
+  },
+  {
+    id: "demo-003",
+    staff_id: "STF003",
+    name: "Amit Jadhav",
+    mobile: "9654321098",
+    email: "amit.jadhav@example.com",
+    department: "Store",
+    role: "Store Manager",
+    salary: 35000,
+    joining_date: "2022-08-22",
+    status: "Active",
+    address: "Baner, Pune",
+    note: "Maintains stock and supplier coordination.",
+  },
+  {
+    id: "demo-004",
+    staff_id: "STF004",
+    name: "Neha Kulkarni",
+    mobile: "9543210987",
+    email: "neha.kulkarni@example.com",
+    department: "Marketing",
+    role: "Marketing Coordinator",
+    salary: 30000,
+    joining_date: "2024-01-10",
+    status: "Active",
+    address: "Aundh, Pune",
+    note: "Coordinates local promotions and campaigns.",
+  },
+  {
+    id: "demo-005",
+    staff_id: "STF005",
+    name: "Suresh Pawar",
+    mobile: "9432109876",
+    email: "suresh.pawar@example.com",
+    department: "Delivery",
+    role: "Delivery Associate",
+    salary: 24000,
+    joining_date: "2023-06-18",
+    status: "Inactive",
+    address: "Pimpri, Pune",
+    note: "Currently on extended leave.",
+  },
 ];
 
-const documents = ["Aadhar", "PAN", "Photo", "Joining Letter", "Resume"];
+const demoSummary = {
+  total_staff: demoStaff.length,
+  active_staff: demoStaff.filter((item) => item.status === "Active").length,
+  inactive_staff: demoStaff.filter((item) => item.status === "Inactive").length,
+  monthly_salary: demoStaff.reduce((total, item) => total + Number(item.salary || 0), 0),
+};
+
+const readLocalStaff = () => {
+  try {
+    const saved = JSON.parse(localStorage.getItem(localStaffKey) || "[]");
+    return Array.isArray(saved) ? saved : [];
+  } catch {
+    return [];
+  }
+};
+
+const writeLocalStaff = (rows) => {
+  localStorage.setItem(localStaffKey, JSON.stringify(rows));
+};
+
+const readLocalStaffDocuments = () => {
+  try {
+    const saved = JSON.parse(localStorage.getItem(localStaffDocumentsKey) || "{}");
+    return saved && typeof saved === "object" ? saved : {};
+  } catch {
+    return {};
+  }
+};
+
+const writeLocalStaffDocuments = (documentsByStaff) => {
+  localStorage.setItem(localStaffDocumentsKey, JSON.stringify(documentsByStaff));
+};
+
+const dataUrlToBlob = (dataUrl) => {
+  const [meta, base64Data] = String(dataUrl || "").split(",");
+  const mimeMatch = meta.match(/data:(.*?);base64/);
+  const mimeType = mimeMatch?.[1] || "application/octet-stream";
+  const binary = window.atob(base64Data || "");
+  const bytes = new Uint8Array(binary.length);
+
+  for (let index = 0; index < binary.length; index += 1) {
+    bytes[index] = binary.charCodeAt(index);
+  }
+
+  return new Blob([bytes], { type: mimeType });
+};
+
+const createViewableFileUrl = (file) => {
+  if (!file?.url) return "";
+  if (String(file.url).startsWith("data:")) {
+    return URL.createObjectURL(dataUrlToBlob(file.url));
+  }
+
+  return file.url;
+};
+
+const createSummary = (rows) => ({
+  total_staff: rows.length,
+  active_staff: rows.filter((item) => item.status === "Active").length,
+  inactive_staff: rows.filter((item) => item.status === "Inactive").length,
+  monthly_salary: rows
+    .filter((item) => item.status !== "Inactive")
+    .reduce((total, item) => total + Number(item.salary || 0), 0),
+});
+
+const normalizeStaffForm = (payload) => ({
+  staff_id: payload.staff_id.trim(),
+  name: payload.name.trim(),
+  mobile: payload.mobile.trim(),
+  email: payload.email.trim(),
+  department: payload.department,
+  role: payload.role.trim(),
+  salary: Number(payload.salary || 0),
+  joining_date: payload.joining_date,
+  status: payload.status || "Active",
+  address: payload.address.trim(),
+  note: payload.note.trim(),
+});
 
 const formatMoney = (value) =>
   new Intl.NumberFormat("en-IN", {
@@ -120,6 +260,32 @@ const formatDate = (value) => {
   if (Number.isNaN(date.getTime())) return String(value).slice(0, 10);
   return date.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
 };
+
+const escapeCsvValue = (value) => `"${String(value ?? "").replace(/"/g, '""')}"`;
+
+const downloadTextFile = (filename, content, type = "text/csv;charset=utf-8;") => {
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+};
+
+const toCsv = (headers, rows) => [
+  headers.map(escapeCsvValue).join(","),
+  ...rows.map((row) => headers.map((header) => escapeCsvValue(row[header])).join(",")),
+].join("\n");
+
+const escapeHtml = (value) =>
+  String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 
 function Staff() {
   const [staff, setStaff] = useState([]);
@@ -144,6 +310,9 @@ function Staff() {
   const [sortBy, setSortBy] = useState("Name");
   const [activeModule, setActiveModule] = useState("dashboard");
   const [showForm, setShowForm] = useState(false);
+  const [showDocuments, setShowDocuments] = useState(false);
+  const [staffDocuments, setStaffDocuments] = useState(readLocalStaffDocuments);
+  const documentInputRefs = useRef({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [savingAttendance, setSavingAttendance] = useState(false);
@@ -155,9 +324,11 @@ function Staff() {
       setLoading(true);
       setError("");
       const [summaryData, staffData] = await Promise.all([getStaffSummary(), getStaff()]);
-      const list = Array.isArray(staffData) ? staffData : [];
+      const savedStaff = Array.isArray(staffData) ? staffData : [];
+      const localStaff = readLocalStaff();
+      const list = savedStaff.length ? savedStaff : localStaff.length ? localStaff : demoStaff;
 
-      setSummary(summaryData || {});
+      setSummary(savedStaff.length ? summaryData || {} : createSummary(list));
       setStaff(list);
       setSelectedStaff((current) => {
         const targetId = preferredId || current?.id;
@@ -165,7 +336,16 @@ function Staff() {
       });
     } catch (err) {
       console.log(err);
-      setError("Staff data load failed. Please check backend and database.");
+      const localStaff = readLocalStaff();
+      const list = localStaff.length ? localStaff : demoStaff;
+
+      setSummary(createSummary(list));
+      setStaff(list);
+      setSelectedStaff((current) => {
+        const targetId = preferredId || current?.id;
+        return list.find((item) => String(item.id) === String(targetId)) || list[0] || null;
+      });
+      setError("");
     } finally {
       setLoading(false);
     }
@@ -229,7 +409,6 @@ function Staff() {
     { label: "Staff", value: summary.total_staff || staff.length || 0, icon: <FiUsers /> },
     { label: "Today's Present", value: Math.max(Number(summary.active_staff || 0) - 2, 0), icon: <FiUserCheck /> },
     { label: "Today's Absent", value: 2, icon: <FiClock /> },
-    { label: "Today's Leave", value: 2, icon: <FiCalendar /> },
     { label: "Monthly Salary", value: formatMoney(summary.monthly_salary), icon: <FiDollarSign /> },
     { label: "Pending Salary", value: formatMoney(Math.round(Number(summary.monthly_salary || 0) * 0.18)), icon: <FiFileText /> },
   ];
@@ -314,14 +493,15 @@ function Staff() {
 
     try {
       setSaving(true);
+      const staffPayload = normalizeStaffForm(form);
 
       if (editingId) {
-        await updateStaff(editingId, form);
+        await updateStaff(editingId, staffPayload);
         showSuccess("Staff updated successfully.");
         setSearch("");
-        await loadStaff(editingId);
+        await loadStaff(editingId); 
       } else {
-        const result = await addStaff(form);
+        const result = await addStaff(staffPayload);
         showSuccess("Staff added successfully.");
         setSearch("");
         await loadStaff(result.id);
@@ -330,7 +510,32 @@ function Staff() {
       closeForm();
     } catch (err) {
       console.log(err);
-      setError(err.response?.data?.message || "Staff save failed.");
+      const staffPayload = normalizeStaffForm(form);
+      const localRows = readLocalStaff();
+      const baseRows = localRows.length ? localRows : staff.filter((item) => !String(item.id).startsWith("demo-"));
+      let savedRows;
+      let savedId = editingId;
+
+      if (editingId) {
+        savedRows = baseRows.map((item) =>
+          String(item.id) === String(editingId) ? { ...item, ...staffPayload, id: item.id } : item
+        );
+        if (!savedRows.some((item) => String(item.id) === String(editingId))) {
+          savedRows = [{ ...staffPayload, id: editingId }, ...baseRows];
+        }
+        showSuccess("Staff updated locally.");
+      } else {
+        savedId = `local-${Date.now()}`;
+        savedRows = [{ ...staffPayload, id: savedId }, ...baseRows];
+        showSuccess("Staff added locally.");
+      }
+
+      writeLocalStaff(savedRows);
+      setStaff(savedRows);
+      setSummary(createSummary(savedRows));
+      setSelectedStaff(savedRows.find((item) => String(item.id) === String(savedId)) || savedRows[0] || null);
+      setSearch("");
+      closeForm();
     } finally {
       setSaving(false);
     }
@@ -355,19 +560,256 @@ function Staff() {
     }
   };
 
-  const removeStaff = async (item) => {
-    if (!window.confirm(`Delete ${item.name}? Staff record and related history will be removed.`)) return;
+  const getDocumentKey = (document) => `${selectedStaff?.id || "staff"}-${document}`;
 
-    try {
-      setError("");
-      await deleteStaff(item.id);
-      showSuccess("Staff deleted successfully.");
-      await loadStaff();
-    } catch (err) {
-      console.log(err);
-      setError(err.response?.data?.message || "Staff delete failed.");
+  const uploadDocument = (document, event) => {
+    const file = event.target.files?.[0];
+    if (!file || !selectedStaff) return;
+
+    const documentKey = getDocumentKey(document);
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      setStaffDocuments((current) => ({
+        ...current,
+        [documentKey]: {
+          name: file.name,
+          url: reader.result,
+          type: file.type,
+          saved: false,
+        },
+      }));
+      showSuccess(`${document} uploaded. Save it to keep after refresh.`);
+    };
+
+    reader.onerror = () => {
+      setError(`${document} upload failed. Please try again.`);
+    };
+
+    reader.readAsDataURL(file);
+    event.target.value = "";
+  };
+
+  const saveDocument = (documentName) => {
+    const documentKey = getDocumentKey(documentName);
+    const file = staffDocuments[documentKey];
+
+    if (!file) {
+      setError(`Upload the ${documentName} document first.`);
+      return;
+    }
+
+    const savedFile = { ...file, saved: true };
+    const updatedDocuments = {
+      ...staffDocuments,
+      [documentKey]: savedFile,
+    };
+    const savedDocuments = {
+      ...readLocalStaffDocuments(),
+      [documentKey]: savedFile,
+    };
+
+    setStaffDocuments(updatedDocuments);
+    writeLocalStaffDocuments(savedDocuments);
+    showSuccess(`${documentName} saved successfully.`);
+  };
+
+  const viewDocument = (documentName) => {
+    const file = staffDocuments[getDocumentKey(documentName)];
+    if (!file) {
+      setError(`Upload the ${documentName} document first.`);
+      return;
+    }
+
+    const viewUrl = createViewableFileUrl(file);
+    const openedWindow = window.open(viewUrl, "_blank", "noopener,noreferrer");
+
+    if (!openedWindow) {
+      setError("Popup blocked hai. Browser me popups allow karke phir View try kare.");
+      if (viewUrl.startsWith("blob:")) URL.revokeObjectURL(viewUrl);
+      return;
+    }
+
+    if (viewUrl.startsWith("blob:")) {
+      window.setTimeout(() => URL.revokeObjectURL(viewUrl), 60000);
     }
   };
+
+  const downloadDocument = (documentName) => {
+    const file = staffDocuments[getDocumentKey(documentName)];
+    if (!file) {
+      setError(`Upload the ${documentName} document first.`);
+      return;
+    }
+
+    const downloadUrl = createViewableFileUrl(file);
+    const link = document.createElement("a");
+    link.href = downloadUrl;
+    link.download = file.name;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    if (downloadUrl.startsWith("blob:")) {
+      window.setTimeout(() => URL.revokeObjectURL(downloadUrl), 1000);
+    }
+  };
+
+  const removeDocument = (documentName) => {
+    const documentKey = getDocumentKey(documentName);
+    const file = staffDocuments[documentKey];
+    if (!file) return;
+
+    setStaffDocuments((current) => {
+      const updatedDocuments = { ...current };
+      delete updatedDocuments[documentKey];
+      const savedDocuments = readLocalStaffDocuments();
+      delete savedDocuments[documentKey];
+      writeLocalStaffDocuments(savedDocuments);
+      return updatedDocuments;
+    });
+    showSuccess(`${documentName} removed. You can upload a new file.`);
+  };
+
+  const buildStaffRows = () =>
+    filteredStaff.map((item) => ({
+      "Staff ID": item.staff_id || "-",
+      Name: item.name || "-",
+      Mobile: item.mobile || "-",
+      Email: item.email || "-",
+      Department: item.department || "-",
+      Role: item.role || "-",
+      Salary: Number(item.salary || 0),
+      "Joining Date": formatDate(item.joining_date),
+      Status: item.status || "Active",
+      Address: item.address || "-",
+    }));
+
+  const buildAttendanceRows = () =>
+    shownAttendanceHistory.map((item) => ({
+      "Staff ID": selectedStaff?.staff_id || "-",
+      Name: selectedStaff?.name || "-",
+      Date: item.date,
+      Status: item.status,
+      Note: item.note || "-",
+    }));
+
+  const buildSalaryRows = () => [
+    {
+      "Staff ID": selectedStaff?.staff_id || "-",
+      Name: selectedStaff?.name || "-",
+      "Monthly Salary": selectedSalary,
+      Paid: salaryPaid,
+      Pending: pendingSalary,
+      Department: selectedStaff?.department || "-",
+      Role: selectedStaff?.role || "-",
+    },
+    ...paymentHistory.map((item) => ({
+      "Staff ID": selectedStaff?.staff_id || "-",
+      Name: selectedStaff?.name || "-",
+      "Monthly Salary": "",
+      Paid: item.amount,
+      Pending: "",
+      Department: "Payment",
+      Role: `${item.date} - ${item.mode}`,
+    })),
+  ];
+
+  const downloadReport = (reportName, rows, filename) => {
+    if (!rows.length) {
+      setError("Report ke liye data available nahi hai.");
+      return;
+    }
+
+    const headers = Object.keys(rows[0]);
+    downloadTextFile(filename, toCsv(headers, rows));
+    showSuccess(`${reportName} downloaded successfully.`);
+  };
+
+  const exportExcel = () => {
+    const rows = buildStaffRows();
+    if (!rows.length) {
+      setError("Excel export ke liye staff data available nahi hai.");
+      return;
+    }
+
+    const headers = Object.keys(rows[0]);
+    const tableRows = rows
+      .map((row) => `<tr>${headers.map((header) => `<td>${escapeHtml(row[header])}</td>`).join("")}</tr>`)
+      .join("");
+    const table = `<table><thead><tr>${headers.map((header) => `<th>${escapeHtml(header)}</th>`).join("")}</tr></thead><tbody>${tableRows}</tbody></table>`;
+
+    downloadTextFile("staff-report.xls", table, "application/vnd.ms-excel;charset=utf-8;");
+    showSuccess("Excel report downloaded successfully.");
+  };
+
+  const exportPdf = () => {
+    const rows = buildStaffRows();
+    if (!rows.length) {
+      setError("PDF export ke liye staff data available nahi hai.");
+      return;
+    }
+
+    const headers = Object.keys(rows[0]);
+    const reportWindow = window.open("", "_blank", "noopener,noreferrer");
+    if (!reportWindow) {
+      setError("Popup blocked hai. Browser me popups allow karke phir try kare.");
+      return;
+    }
+
+    const tableRows = rows
+      .map((row) => `<tr>${headers.map((header) => `<td>${escapeHtml(row[header])}</td>`).join("")}</tr>`)
+      .join("");
+
+    reportWindow.document.write(`
+      <!doctype html>
+      <html>
+        <head>
+          <title>Staff Report</title>
+          <style>
+            body { font-family: Arial, sans-serif; color: #0f172a; padding: 24px; }
+            h1 { margin: 0 0 6px; font-size: 24px; }
+            p { margin: 0 0 18px; color: #475569; }
+            table { width: 100%; border-collapse: collapse; font-size: 12px; }
+            th, td { border: 1px solid #cbd5e1; padding: 8px; text-align: left; }
+            th { background: #e0f2fe; color: #075985; }
+          </style>
+        </head>
+        <body>
+          <h1>Staff Report</h1>
+          <p>Generated on ${escapeHtml(formatDate(new Date()))}</p>
+          <table>
+            <thead><tr>${headers.map((header) => `<th>${escapeHtml(header)}</th>`).join("")}</tr></thead>
+            <tbody>${tableRows}</tbody>
+          </table>
+          <script>
+            window.onload = function () {
+              window.print();
+            };
+          </script>
+        </body>
+      </html>
+    `);
+    reportWindow.document.close();
+    showSuccess("PDF report ready. Print dialog open ho jayega.");
+  };
+
+  const reportActions = [
+    {
+      label: "Attendance Report",
+      onClick: () => downloadReport("Attendance report", buildAttendanceRows(), "attendance-report.csv"),
+    },
+    {
+      label: "Salary Report",
+      onClick: () => downloadReport("Salary report", buildSalaryRows(), "salary-report.csv"),
+    },
+    {
+      label: "Staff Report",
+      onClick: () => downloadReport("Staff report", buildStaffRows(), "staff-report.csv"),
+    },
+    { label: "Export Excel", onClick: exportExcel },
+    { label: "Export PDF", onClick: exportPdf },
+  ];
 
   const openModule = (module) => {
     setActiveModule(module.id);
@@ -391,7 +833,7 @@ function Staff() {
             <FiUserCheck /> Staff Desk
           </span>
           <h1>Staff Management</h1>
-          <p>Staff records, attendance, salary, advance, leave, performance, and reports.</p>
+          <p>Staff records, attendance, salary, documents, and reports.</p>
         </div>
         <button className="staff-primary-btn" type="button" onClick={openAddForm}>
           <FiPlus /> Add Staff
@@ -556,7 +998,10 @@ function Staff() {
                   className={selectedStaff?.id === item.id ? "staff-list-item active" : "staff-list-item"}
                   key={item.id}
                   type="button"
-                  onClick={() => setSelectedStaff(item)}
+                  onClick={() => {
+                    setSelectedStaff(item);
+                    setShowDocuments(false);
+                  }}
                 >
                   <span className="staff-avatar">{item.name?.charAt(0)?.toUpperCase() || "S"}</span>
                   <span>
@@ -584,6 +1029,17 @@ function Staff() {
                       <span className={selectedStaff.status === "Active" ? "status-active" : "status-inactive"}>
                         {selectedStaff.status || "Active"}
                       </span>
+                      <button
+                        className="staff-doc-toggle"
+                        type="button"
+                        aria-expanded={showDocuments}
+                        onClick={() => setShowDocuments((current) => !current)}
+                      >
+                        <FiFileText /> Documents
+                      </button>
+                      <button className="staff-inline-edit" type="button" onClick={() => openEditForm(selectedStaff)}>
+                        <FiEdit2 /> Edit Staff
+                      </button>
                     </div>
                     <small>{selectedStaff.staff_id || "-"} | {selectedStaff.role || "Staff"}</small>
                   </div>
@@ -597,6 +1053,50 @@ function Staff() {
                   <div><FiMapPin /><span>Address</span><strong>{selectedStaff.address || "Not available"}</strong></div>
                   <div><FiFileText /><span>Notes</span><strong>{selectedStaff.note || "No notes added."}</strong></div>
                 </div>
+                {showDocuments && (
+                  <div className="staff-profile-documents">
+                    <div className="staff-doc-grid">
+                      {documents.map((documentName) => {
+                        const uploadedFile = staffDocuments[getDocumentKey(documentName)];
+
+                        return (
+                        <div key={documentName}>
+                          <div className="staff-document-info">
+                            <strong>{documentName}</strong>
+                            <small>{uploadedFile?.name || "No file uploaded"}</small>
+                          </div>
+                          <span>
+                            <input
+                              ref={(node) => { documentInputRefs.current[documentName] = node; }}
+                              className="staff-document-input"
+                              type="file"
+                              accept="image/*,application/pdf"
+                              onChange={(event) => uploadDocument(documentName, event)}
+                            />
+                            <button type="button" onClick={() => documentInputRefs.current[documentName]?.click()}>
+                              <FiUpload /> Upload
+                            </button>
+                            <button type="button" onClick={() => viewDocument(documentName)}>
+                              <FiEye /> View
+                            </button>
+                            <button type="button" onClick={() => downloadDocument(documentName)}>
+                              <FiDownload /> Download
+                            </button>
+                            <button type="button" onClick={() => saveDocument(documentName)} disabled={!uploadedFile}>
+                              <FiSave /> Save
+                            </button>
+                            {uploadedFile && (
+                              <button className="staff-document-remove" type="button" onClick={() => removeDocument(documentName)}>
+                                <FiTrash2 /> Remove
+                              </button>
+                            )}
+                          </span>
+                        </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
               </section>
 
               <section className="staff-dashboard-block" id="staff-attendance-section">
@@ -683,9 +1183,9 @@ function Staff() {
                     <tbody>
                       {shownAttendanceHistory.map((item) => (
                         <tr key={`${item.date}-${item.status}-${item.note}`}>
-                          <td>{item.date}</td>
-                          <td><span className={`status-pill ${String(item.status).toLowerCase().replace(" ", "-")}`}>{item.status}</span></td>
-                          <td>{item.note}</td>
+                          <td data-label="Date">{item.date}</td>
+                          <td data-label="Status"><span className={`status-pill ${String(item.status).toLowerCase().replace(" ", "-")}`}>{item.status}</span></td>
+                          <td data-label="Remarks">{item.note}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -722,87 +1222,13 @@ function Staff() {
                     <tbody>
                       {paymentHistory.map((item) => (
                         <tr key={`${item.date}-${item.amount}`}>
-                          <td>{item.date}</td>
-                          <td>{formatMoney(item.amount)}</td>
-                          <td>{item.mode}</td>
+                          <td data-label="Date">{item.date}</td>
+                          <td data-label="Amount">{formatMoney(item.amount)}</td>
+                          <td data-label="Mode">{item.mode}</td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
-                </div>
-              </section>
-
-              <div className="staff-two-column">
-                <section className="staff-dashboard-block" id="staff-advance-section">
-                  <div className="staff-block-title">
-                    <h3>Advance Payment</h3>
-                    <FiDollarSign />
-                  </div>
-                  <div className="staff-info-stack">
-                    <div><span>Advance Given</span><strong>{formatMoney(3000)}</strong></div>
-                    <div><span>Reason</span><strong>Festival</strong></div>
-                    <div><span>Date</span><strong>5 July</strong></div>
-                    <div><span>Recovery Pending</span><strong>{formatMoney(1000)}</strong></div>
-                  </div>
-                </section>
-
-                <section className="staff-dashboard-block" id="staff-leave-section">
-                  <div className="staff-block-title">
-                    <h3>Leave Management</h3>
-                    <FiCalendar />
-                  </div>
-                  <div className="staff-leave-grid">
-                    {leaveStats.map((leave) => (
-                      <div key={leave.label}>
-                        <span>{leave.label}</span>
-                        <strong>{leave.value}</strong>
-                      </div>
-                    ))}
-                  </div>
-                </section>
-              </div>
-
-              <section className="staff-dashboard-block" id="staff-performance-section">
-                <div className="staff-block-title">
-                  <h3>Performance</h3>
-                  <span>4.5 / 5</span>
-                </div>
-                <div className="staff-performance-grid performance-three">
-                  <div><FiActivity /><span>Attendance %</span><strong>95%</strong></div>
-                  <div><FiAward /><span>Monthly Rating</span><strong>4.5</strong></div>
-                  <div><FiClock /><span>Late Entry</span><strong>2</strong></div>
-                </div>
-              </section>
-
-              <section className="staff-dashboard-block" id="staff-documents-section">
-                <div className="staff-block-title">
-                  <h3>Documents</h3>
-                  <span>{documents.length} files</span>
-                </div>
-                <div className="staff-doc-grid">
-                  {documents.map((document) => (
-                    <div key={document}>
-                      <strong>{document}</strong>
-                      <span>
-                        <button type="button"><FiUpload /> Upload</button>
-                        <button type="button"><FiEye /> View</button>
-                        <button type="button"><FiDownload /> Download</button>
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </section>
-
-              <section className="staff-dashboard-block" id="staff-emergency-section">
-                <div className="staff-block-title">
-                  <h3>Emergency Contact</h3>
-                  <FiPhone />
-                </div>
-                <div className="staff-money-grid emergency-grid">
-                  <div><span>Father Name</span><strong>-</strong></div>
-                  <div><span>Emergency Number</span><strong>-</strong></div>
-                  <div><span>Blood Group</span><strong>-</strong></div>
-                  <div><span>Address</span><strong>{selectedStaff.address || "-"}</strong></div>
                 </div>
               </section>
 
@@ -812,21 +1238,11 @@ function Staff() {
                   <span>Export</span>
                 </div>
                 <div className="staff-report-actions">
-                  {["Attendance Report", "Salary Report", "Staff Report", "Export Excel", "Export PDF"].map((report) => (
-                    <button type="button" key={report}>{report}</button>
+                  {reportActions.map((report) => (
+                    <button type="button" key={report.label} onClick={report.onClick}>
+                      {report.label}
+                    </button>
                   ))}
-                </div>
-              </section>
-
-              <section className="staff-quick-actions">
-                <h3>Actions</h3>
-                <div className="staff-detail-actions">
-                  <button type="button" onClick={() => openEditForm(selectedStaff)}>
-                    <FiEdit2 /> Edit Staff
-                  </button>
-                  <button className="danger" type="button" onClick={() => removeStaff(selectedStaff)}>
-                    <FiTrash2 /> Delete Staff
-                  </button>
                 </div>
               </section>
             </>

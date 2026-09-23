@@ -15,3 +15,10 @@ export const loginUser = async (userData) => {
         userData
     );
 };
+
+export const changePassword = async (passwordData) => {
+    return axios.put(
+        `${API_URL}/change-password`,
+        passwordData
+    );
+};

@@ -16,6 +16,7 @@ const sendError = (res, message, err, status = 500) => {
 const validateId = (id) => Number.isInteger(Number(id)) && Number(id) > 0;
 const toAmount = (value) => Number(value || 0);
 
+
 const columnExists = async (table, column) => {
   const rows = await query(`SHOW COLUMNS FROM ${table} LIKE ?`, [column]);
   return rows.length > 0;

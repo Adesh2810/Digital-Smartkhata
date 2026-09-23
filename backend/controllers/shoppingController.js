@@ -1,5 +1,5 @@
 import db from "../config/db.js";
-import { ensureCollectionSchema, getProducts } from "./collectionController.js";
+import { ensureInventorySchema, getProducts } from "./inventoryController.js";
 
 const query = (sql, params = []) =>
   new Promise((resolve, reject) => {
@@ -34,7 +34,7 @@ const toNumber = (value) => Number(value || 0);
 const normalizeDateTime = (value) => String(value || "").replace("T", " ").slice(0, 19);
 
 const schemaReady = (async () => {
-  await ensureCollectionSchema;
+  await ensureInventorySchema;
 
   await query(`
     CREATE TABLE IF NOT EXISTS shopping_orders (

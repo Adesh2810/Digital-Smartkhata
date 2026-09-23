@@ -1,5 +1,19 @@
-import React, { useState } from "react";
-import "./orders.css";
+import { useMemo, useState } from "react";
+import {
+  FaBoxOpen,
+  FaCheck,
+  FaClock,
+  FaMapMarkerAlt,
+  FaPhoneAlt,
+  FaRegCreditCard,
+  FaSearch,
+  FaShoppingBag,
+  FaTimes,
+  FaTruck,
+  FaUserCheck,
+} from "react-icons/fa";
+import "./Orders.css";
+
 const initialOrders = [
   {
     id: 1,
@@ -48,293 +62,259 @@ const initialOrders = [
   },
 ];
 
+const statusConfig = {
+  Pending: {
+    title: "Pending Orders",
+    tone: "pending",
+    icon: FaClock,
+    action: "Needs approval",
+  },
+  Accepted: {
+    title: "Accepted Orders",
+    tone: "accepted",
+    icon: FaUserCheck,
+    action: "Packing queue",
+  },
+  Ready: {
+    title: "Ready Orders",
+    tone: "ready",
+    icon: FaBoxOpen,
+    action: "Ready to deliver",
+  },
+  Delivered: {
+    title: "Delivered Orders",
+    tone: "delivered",
+    icon: FaTruck,
+    action: "Completed",
+  },
+  Rejected: {
+    title: "Rejected Orders",
+    tone: "rejected",
+    icon: FaTimes,
+    action: "Cancelled",
+  },
+};
+
+const currency = new Intl.NumberFormat("en-IN", {
+  style: "currency",
+  currency: "INR",
+  maximumFractionDigits: 0,
+});
+
+function OrderCard({ order, onStatusChange }) {
+  const itemCount = order.products.reduce((sum, product) => sum + product.qty, 0);
+
+  return (
+    <article className={`order-card ${order.status.toLowerCase()}-order`}>
+      <div className="order-card-top">
+        <div className="order-customer">
+          <span className="order-avatar">{order.customer.charAt(0)}</span>
+          <div>
+            <p className="order-id">Order #{String(order.id).padStart(3, "0")}</p>
+            <h3>{order.customer}</h3>
+          </div>
+        </div>
+        <span className={`status-pill ${order.status.toLowerCase()}`}>{order.status}</span>
+      </div>
+
+      <div className="order-meta">
+        <span><FaPhoneAlt /> {order.phone}</span>
+        <span><FaMapMarkerAlt /> {order.address}</span>
+        <span><FaClock /> {order.time}</span>
+      </div>
+
+      <div className="products-panel">
+        <div className="products-title">
+          <span><FaShoppingBag /> {itemCount} items</span>
+          <b>{order.products.length} products</b>
+        </div>
+        {order.products.map((product) => (
+          <div className="product-line" key={`${order.id}-${product.name}`}>
+            <span>{product.name}</span>
+            <strong>x{product.qty}</strong>
+          </div>
+        ))}
+      </div>
+
+      <div className="order-payment">
+        <div>
+          <span>Total Bill</span>
+          <strong>{currency.format(order.total)}</strong>
+        </div>
+        <p><FaRegCreditCard /> {order.payment}</p>
+      </div>
+
+      <div className="order-actions">
+        {order.status === "Pending" && (
+          <>
+            <button className="accept-btn" onClick={() => onStatusChange(order.id, "Accepted")}>
+              <FaCheck /> Accept
+            </button>
+            <button className="reject-btn" onClick={() => onStatusChange(order.id, "Rejected")}>
+              <FaTimes /> Reject
+            </button>
+          </>
+        )}
+
+        {order.status === "Accepted" && (
+          <button className="ready-btn" onClick={() => onStatusChange(order.id, "Ready")}>
+            <FaBoxOpen /> Mark Ready
+          </button>
+        )}
+
+        {order.status === "Ready" && (
+          <button className="parcel-btn" onClick={() => onStatusChange(order.id, "Delivered")}>
+            <FaTruck /> Parcel Delivered
+          </button>
+        )}
+
+        {order.status === "Delivered" && (
+          <button className="done-btn" disabled>
+            <FaCheck /> Delivered
+          </button>
+        )}
+
+        {order.status === "Rejected" && (
+          <button className="cancelled-btn" disabled>
+            <FaTimes /> Rejected
+          </button>
+        )}
+      </div>
+    </article>
+  );
+}
+
 function Orders() {
   const [orders, setOrders] = useState(initialOrders);
   const [search, setSearch] = useState("");
+  const [activeStatus, setActiveStatus] = useState("All");
 
   const updateStatus = (id, status) => {
     setOrders((prev) =>
-      prev.map((order) =>
-        order.id === id ? { ...order, status } : order
-      )
+      prev.map((order) => (order.id === id ? { ...order, status } : order))
     );
   };
 
-  const filteredOrders = orders.filter((order) =>
-    order.customer.toLowerCase().includes(search.toLowerCase())
-  );
+  const dashboard = useMemo(() => {
+    const normalized = search.trim().toLowerCase();
+    const searched = orders.filter((order) => {
+      const searchable = `${order.customer} ${order.phone} ${order.address} ${order.payment}`.toLowerCase();
+      return searchable.includes(normalized);
+    });
 
-  const pendingOrders = filteredOrders.filter(
-    (order) => order.status === "Pending"
-  );
+    const filtered =
+      activeStatus === "All"
+        ? searched
+        : searched.filter((order) => order.status === activeStatus);
 
-  const acceptedOrders = filteredOrders.filter(
-    (order) => order.status === "Accepted"
-  );
+    const grouped = Object.keys(statusConfig).reduce((acc, status) => {
+      acc[status] = filtered.filter((order) => order.status === status);
+      return acc;
+    }, {});
 
-  const readyOrders = filteredOrders.filter(
-    (order) => order.status === "Ready"
-  );
+    const totalRevenue = orders
+      .filter((order) => order.status !== "Rejected")
+      .reduce((sum, order) => sum + order.total, 0);
 
-  const deliveredOrders = filteredOrders.filter(
-    (order) => order.status === "Delivered"
-  );
-
-  const totalOrders = orders.length;
-  const pending = pendingOrders.length;
-  const accepted = acceptedOrders.length;
-  const ready = readyOrders.length;
-  const delivered = deliveredOrders.length;
-  const revenue = orders.reduce((sum, o) => sum + o.total, 0);
+    return { filtered, grouped, totalRevenue };
+  }, [activeStatus, orders, search]);
 
   return (
     <div className="orders-page">
-
-      <div className="orders-header">
+      <header className="orders-hero">
         <div>
-          <span>Today's Orders</span>
+          <span className="orders-eyebrow">Today's orders</span>
           <h1>Orders Dashboard</h1>
-          <p>Manage customer order requests and parcel status.</p>
+          <p>Track every customer request from approval to parcel delivery.</p>
         </div>
 
-        <input
-          type="text"
-          placeholder="🔍 Search Customer..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-      </div>
-
-      <div className="order-summary">
-
-        
-
-        <div className="summary-card">
-          <h4>Pending</h4>
-          <h2>{pending}</h2>
+        <div className="orders-search">
+          <FaSearch />
+          <input
+            type="text"
+            placeholder="Search customer, phone, address"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+          />
         </div>
+      </header>
 
-        <div className="summary-card">
-          <h4>Accepted</h4>
-          <h2>{accepted}</h2>
-        </div>
+      <section className="order-summary">
+        {Object.entries(statusConfig).map(([status, config]) => {
+          const Icon = config.icon;
+          return (
+            <button
+              className={`summary-card ${config.tone} ${activeStatus === status ? "active" : ""}`}
+              key={status}
+              onClick={() => setActiveStatus(activeStatus === status ? "All" : status)}
+              type="button"
+            >
+              <span className="summary-icon"><Icon /></span>
+              <span>
+                <small>{config.action}</small>
+                <strong>{dashboard.grouped[status]?.length || 0}</strong>
+                <b>{status}</b>
+              </span>
+            </button>
+          );
+        })}
+      </section>
 
-        <div className="summary-card">
-          <h4>Ready</h4>
-          <h2>{ready}</h2>
-        </div>
-
-        <div className="summary-card">
-          <h4>Delivered</h4>
-          <h2>{delivered}</h2>
-        </div>
-
-      </div>
-
-      {/* Pending Orders */}
-      
-<div className="section-card pending-card">
-    <div className="section-header">
-        <h2 className="section-title">
-            🟠 Pending Orders ({pending})
-        </h2>
-    </div>
-<div className="order-row">
-    {pendingOrders.map((order) => (
-  <div className="mini-order-card" key={order.id}>
-
-    <div className="mini-top">
-      <div>
-        <h2>{order.customer}</h2>
-        <p>📞 {order.phone}</p>
-        <p>📍 {order.address}</p>
-        <p>🕒 {order.time}</p>
-      </div>
-
-      <span className={`status ${order.status.toLowerCase()}`}>
-        {order.status}
-      </span>
-    </div>
-
-    <p>🛒 {order.products.length} Items</p>
-
-        <div className="price-box">
-          <strong>₹{order.total}</strong>
-          <span>{order.payment}</span>
-        </div>
-
-    
-
-    <div className="order-actions">
-      <button
-        className="accept-btn"
-        onClick={() => updateStatus(order.id, "Accepted")}
-      >
-        Accept
-      </button>
-
-      <button
-        className="reject-btn"
-        onClick={() => updateStatus(order.id, "Rejected")}
-      >
-        Reject
-      </button>
-    </div>
-
-  </div>
-))}
-</div>
-</div>
-
-{/* Accepted Orders */}
-
-<h2 className="section-title"></h2>
-<div className="section-card accepted-card">
-    <div className="section-header">
-        <h2 className="section-title">
-            🟦 Accepted Orders ({accepted})
-        </h2>
-    </div>
-
-<div className="order-row">
-  {acceptedOrders.map((order) => (
-    <div className="mini-order-card" key={order.id}>
-
-      <div className="mini-top">
+      <section className="orders-toolbar">
         <div>
-          <h2>{order.customer}</h2>
-          <p>📞 {order.phone}</p>
-          <p>📍 {order.address}</p>
-          <p>🕒 {order.time}</p>
+          <p>Visible orders</p>
+          <strong>{dashboard.filtered.length}</strong>
         </div>
-
-        <span className={`status ${order.status.toLowerCase()}`}>
-          {order.status}
-        </span>
-      </div>
-
-      <p>🛒 {order.products.length} Items</p>
-
-        <div className="price-box">
-          <strong>₹{order.total}</strong>
-          <span>{order.payment}</span>
+        <div>
+          <p>Total order value</p>
+          <strong>{currency.format(dashboard.totalRevenue)}</strong>
         </div>
-
-      
-
-      <div className="order-actions">
         <button
-          className="ready-btn"
-          onClick={() => updateStatus(order.id, "Ready")}
+          type="button"
+          className={activeStatus === "All" ? "filter-chip active" : "filter-chip"}
+          onClick={() => setActiveStatus("All")}
         >
-          Ready
+          All Status
         </button>
-      </div>
+      </section>
 
+      <main className="orders-board">
+        {Object.entries(statusConfig).map(([status, config]) => {
+          const Icon = config.icon;
+          const statusOrders = dashboard.grouped[status] || [];
+
+          return (
+            <section className={`orders-section ${config.tone}`} key={status}>
+              <div className="section-heading">
+                <div>
+                  <span><Icon /></span>
+                  <h2>{config.title}</h2>
+                </div>
+                <strong>{statusOrders.length}</strong>
+              </div>
+
+              <div className="orders-grid">
+                {statusOrders.map((order) => (
+                  <OrderCard
+                    key={order.id}
+                    order={order}
+                    onStatusChange={updateStatus}
+                  />
+                ))}
+              </div>
+
+              {statusOrders.length === 0 && (
+                <div className="empty-orders">
+                  <FaShoppingBag />
+                  <p>No {status.toLowerCase()} orders found</p>
+                </div>
+              )}
+            </section>
+          );
+        })}
+      </main>
     </div>
-  ))}
-  </div>
-</div>
-
-{/* Ready Orders */}
-
-<div className="section-card ready-card">
-  <div className="section-header">
-        <h2 className="section-title">
-            🟣 Ready Orders ({ready})
-        </h2>
-    </div>
-
-<div className="order-row">
-  {readyOrders.map((order) => (
-    <div className="mini-order-card" key={order.id}>
-
-      <div className="mini-top">
-        <div>
-          <h2>{order.customer}</h2>
-          <p>📞 {order.phone}</p>
-          <p>📍 {order.address}</p>
-          <p>🕒 {order.time}</p>
-        </div>
-
-        <span className={`status ${order.status.toLowerCase()}`}>
-          {order.status}
-        </span>
-      </div>
-
-      <p>🛒 {order.products.length} Items</p>
-
-          <div className="price-box">
-            <strong>₹{order.total}</strong>
-            <span>{order.payment}</span>
-          </div>
-
-      
-
-      <div className="order-actions">
-        <button
-          className="parcel-btn"
-          onClick={() => updateStatus(order.id, "Delivered")}
-        >
-          Parcel Delivered
-        </button>
-      </div>
-
-    </div>
-  ))}
-  </div>
-</div>
-
-
-{/* Delivered Orders */}
-
-
-<div className="section-card ready-card">
-<div className="section-header">
-        <h2 className="section-title">
-            🟢 Delivered Orders ({delivered})
-        </h2>
-    </div>
-
-<div className="order-row">
-  {deliveredOrders.map((order) => (
-    <div className="mini-order-card" key={order.id}>
-
-      <div className="mini-top">
-        <div>
-          <h2>{order.customer}</h2>
-          <p>📞 {order.phone}</p>
-          <p>📍 {order.address}</p>
-          <p>🕒 {order.time}</p>
-        </div>
-
-        <span className={`status ${order.status.toLowerCase()}`}>
-          {order.status}
-        </span>
-      </div>
-
-     <p>🛒 {order.products.length} Items</p>
-
-        <div className="price-box">
-          <strong>₹{order.total}</strong>
-          <span>{order.payment}</span>
-        </div>
-
-      
-
-      <div className="order-actions">
-        <button className="done-btn">
-          Delivered
-        </button>
-      </div>
-
-    </div>
-  ))}
-  </div>
-</div>
-
-</div>
-);
+  );
 }
-export default Orders;
 
+export default Orders;

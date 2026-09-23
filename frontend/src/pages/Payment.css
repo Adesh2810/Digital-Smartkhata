@@ -35,7 +35,6 @@
   color: #64748b;
 }
 
-.new-payment-btn,
 .save-payment-btn,
 .cancel-edit-btn,
 .edit-btn,
@@ -44,12 +43,6 @@
   border-radius: 8px;
   cursor: pointer;
   font-weight: 700;
-}
-
-.new-payment-btn {
-  padding: 12px 18px;
-  background: #0f766e;
-  color: #fff;
 }
 
 .payment-notice {
@@ -322,21 +315,21 @@
   overflow-x: auto;
 }
 
-table {
+.payment-page table {
   width: 100%;
   min-width: 980px;
   border-collapse: collapse;
 }
 
-th,
-td {
+.payment-page th,
+.payment-page td {
   padding: 13px;
   border-bottom: 1px solid #eef2f7;
   text-align: left;
   vertical-align: top;
 }
 
-th {
+.payment-page th {
   background: #f8fafc;
   color: #475569;
   font-size: 13px;
@@ -391,5 +384,270 @@ th {
 
   .history-top input {
     max-width: none;
+  }
+}
+
+/* Payment mobile stability and usability */
+.payment-page {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.payment-page input,
+.payment-page select,
+.payment-page textarea,
+.payment-page button {
+  max-width: 100%;
+}
+
+.payment-header > div,
+.payment-stat-card,
+.payment-form-card,
+.balance-card,
+.recent-payments,
+.trend-panel,
+.top-customers,
+.payment-history,
+.balance-customer,
+.balance-item,
+.recent-row > div,
+.top-row > div,
+.history-top {
+  min-width: 0;
+}
+
+.payment-header h1,
+.payment-header p,
+.payment-stat-card strong,
+.payment-stat-card span,
+.form-title-row h2,
+.balance-card h2,
+.recent-payments h2,
+.trend-panel h2,
+.top-customers h2,
+.payment-history h2,
+.balance-customer span,
+.balance-customer small,
+.balance-item b,
+.recent-row strong,
+.recent-row span,
+.top-row strong,
+.top-row span,
+.payment-page td {
+  overflow-wrap: anywhere;
+}
+
+@media (hover: none) {
+  .edit-btn:hover,
+  .delete-btn:hover,
+  .save-payment-btn:hover,
+  .cancel-edit-btn:hover {
+    transform: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .payment-page {
+    padding: 12px;
+  }
+
+  .payment-header {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
+    padding: 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background: #ffffff;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+  }
+
+  .payment-header h1 {
+    font-size: 26px;
+    line-height: 1.15;
+  }
+
+  .payment-stats,
+  .payment-grid,
+  .payment-insights,
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .payment-stat-card,
+  .payment-form-card,
+  .balance-card,
+  .recent-payments,
+  .trend-panel,
+  .top-customers,
+  .payment-history {
+    padding: 14px;
+  }
+
+  .payment-stat-card {
+    display: grid;
+    gap: 4px;
+  }
+
+  .payment-stat-card strong {
+    margin: 2px 0;
+    font-size: 24px;
+  }
+
+  .form-title-row,
+  .history-top {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    align-items: stretch;
+  }
+
+  .cancel-edit-btn,
+  .save-payment-btn,
+  .history-top input {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea,
+  .history-top input {
+    min-height: 44px;
+    font-size: 16px;
+  }
+
+  .balance-item,
+  .recent-row,
+  .top-row {
+    align-items: flex-start;
+  }
+
+  .balance-item {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .recent-row,
+  .top-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .recent-row b,
+  .top-row b {
+    justify-self: start;
+  }
+
+  .recent-list,
+  .top-list {
+    min-height: auto;
+  }
+
+  .trend-bars {
+    grid-template-columns: repeat(7, minmax(28px, 1fr));
+    gap: 6px;
+    min-height: 180px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .trend-bar-item {
+    min-width: 36px;
+    grid-template-rows: 110px auto auto;
+    gap: 5px;
+  }
+
+  .trend-bar-item small,
+  .trend-bar-item b {
+    font-size: 11px;
+  }
+
+  .table-wrapper {
+    overflow: visible;
+  }
+
+  .payment-history {
+    overflow: visible;
+  }
+
+  .payment-page table,
+  .payment-page thead,
+  .payment-page tbody,
+  .payment-page tr,
+  .payment-page th,
+  .payment-page td {
+    display: block;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .payment-page table {
+    border-collapse: separate;
+    border-spacing: 0 12px;
+  }
+
+  .payment-page thead {
+    display: none;
+  }
+
+  .payment-page tr {
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background: #ffffff;
+  }
+
+  .payment-page td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 44px;
+    padding: 10px 12px;
+    text-align: right;
+  }
+
+  .payment-page td::before {
+    content: attr(data-label);
+    flex: 0 0 auto;
+    color: #64748b;
+    font-weight: 900;
+    text-align: left;
+  }
+
+  .payment-page td[data-label="Customer"],
+  .payment-page td[data-label="Note"] {
+    display: grid;
+    grid-template-columns: 1fr;
+    text-align: left;
+  }
+
+  .payment-page td[data-label="Customer"]::before,
+  .payment-page td[data-label="Note"]::before {
+    margin-bottom: 4px;
+  }
+
+  .table-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+
+  .edit-btn,
+  .delete-btn {
+    width: 100%;
+    min-height: 40px;
+  }
+}
+
+@media (max-width: 380px) {
+  .trend-bars {
+    grid-template-columns: repeat(7, minmax(34px, 1fr));
   }
 }

@@ -502,21 +502,21 @@ function Customers() {
                                             <tbody>
                                                 {history.map((entry, index) => (
                                                     <tr key={`${entry.type}-${entry.id}-${index}`}>
-                                                        <td>{formatDate(entry.date)}</td>
-                                                        <td>
+                                                        <td data-label="Date">{formatDate(entry.date)}</td>
+                                                        <td data-label="Product">
                                                             <strong>{entry.product_name || "-"}</strong>
                                                             <span className="row-type">{entry.type?.replace("_", " ") || "record"}</span>
                                                         </td>
-                                                        <td>{formatMoney(entry.price)}</td>
-                                                        <td>{entry.quantity || 0}</td>
-                                                        <td className="paid-color">{formatMoney(entry.paid_amount)}</td>
-                                                        <td className="pending-color">{formatMoney(entry.pending_amount)}</td>
-                                                        <td>
+                                                        <td data-label="Price">{formatMoney(entry.price)}</td>
+                                                        <td data-label="Qty">{entry.quantity || 0}</td>
+                                                        <td data-label="Paid" className="paid-color">{formatMoney(entry.paid_amount)}</td>
+                                                        <td data-label="Pending" className="pending-color">{formatMoney(entry.pending_amount)}</td>
+                                                        <td data-label="Status">
                                                             <span className={`status ${String(entry.status).toLowerCase()}`}>
                                                                 {entry.status || "Pending"}
                                                             </span>
                                                         </td>
-                                                        <td>
+                                                        <td data-label="Action">
                                                             {entry.type === "product_entry" ? (
                                                                 <div className="table-actions">
                                                                     <button

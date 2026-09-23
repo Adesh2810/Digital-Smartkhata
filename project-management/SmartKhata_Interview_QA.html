@@ -1,0 +1,191 @@
+d<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>SmartKhata Interview Preparation Q&A</title>
+  <style>
+    @page { size: A4; margin: 18mm 16mm; }
+    body { font-family: Arial, sans-serif; color: #172033; line-height: 1.45; font-size: 12.5px; }
+    h1 { font-size: 28px; margin: 0 0 6px; color: #0f5132; }
+    h2 { font-size: 18px; margin: 22px 0 8px; color: #153e75; border-bottom: 1px solid #d9e2ec; padding-bottom: 4px; }
+    h3 { font-size: 14px; margin: 14px 0 5px; color: #243b53; }
+    p { margin: 5px 0; }
+    ul { margin: 6px 0 10px 18px; padding: 0; }
+    li { margin: 3px 0; }
+    .cover { border: 2px solid #0f5132; padding: 22px; margin-bottom: 16px; }
+    .tag { display: inline-block; background: #e6f4ea; color: #0f5132; padding: 4px 8px; border-radius: 4px; font-weight: bold; margin: 2px 4px 2px 0; }
+    .note { background: #f8fafc; border-left: 4px solid #2f80ed; padding: 10px 12px; margin: 10px 0; }
+    .qa { page-break-inside: avoid; margin: 10px 0 12px; }
+    .q { font-weight: bold; color: #111827; }
+    .a { margin-top: 3px; }
+    table { width: 100%; border-collapse: collapse; margin: 8px 0 12px; }
+    th, td { border: 1px solid #d9e2ec; padding: 7px; text-align: left; vertical-align: top; }
+    th { background: #f1f5f9; color: #102a43; }
+    .small { font-size: 11px; color: #52606d; }
+    .page-break { page-break-before: always; }
+  </style>
+</head>
+<body>
+  <section class="cover">
+    <h1>SmartKhata Interview Preparation</h1>
+    <p><strong>Candidate Experience:</strong> 1.6 years</p>
+    <p><strong>Project Type:</strong> Retail / credit ledger / inventory / staff management web application</p>
+    <p><strong>Prepared From:</strong> Current SmartKhata codebase analysis</p>
+    <p class="small">Use this document to explain your real project work confidently in interviews. Answers are written in simple Hinglish so you can speak naturally.</p>
+    <div>
+      <span class="tag">React</span><span class="tag">Vite</span><span class="tag">Node.js</span><span class="tag">Express</span>
+      <span class="tag">MySQL</span><span class="tag">Axios</span><span class="tag">JWT</span><span class="tag">Recharts</span>
+    </div>
+  </section>
+
+  <h2>1. Project Summary</h2>
+  <p><strong>SmartKhata</strong> ek business management web application hai jo small shops / retail businesses ke daily credit, payment, customer ledger, supplier purchase, inventory, shopping order aur staff records manage karta hai.</p>
+  <p>Is project ka main goal hai shop owner ko ek single dashboard dena jahan wo customer outstanding, payment recovery, product stock, order status, supplier debit, aur staff attendance/salary data track kar sake.</p>
+
+  <h2>2. Best Self Introduction For This Project</h2>
+  <div class="note">
+    <p>“Mera current project SmartKhata hai. Ye ek full-stack web application hai jisme maine React frontend, Node.js Express backend aur MySQL database par kaam kiya. Project ka business domain retail credit ledger and inventory management hai. Isme customer management, customer product entries, payments with balance update, supplier purchase tracking, product inventory, shopping orders with stock deduction, dashboard analytics, authentication, aur staff HRMS module jaise features hain. Frontend mein maine reusable pages, forms, filters, dashboard charts, API integration through Axios aur responsive UI par kaam kiya. Backend mein REST APIs, validations, MySQL CRUD operations, transaction handling, schema creation, balance calculations aur error handling implement kiya.”</p>
+  </div>
+
+  <h2>3. Tech Stack</h2>
+  <table>
+    <tr><th>Layer</th><th>Technology</th><th>Where Used</th></tr>
+    <tr><td>Frontend</td><td>React 19, Vite</td><td>Dashboard, Customers, Payments, Inventory, Shopping, Orders, Staff, Login/Register pages</td></tr>
+    <tr><td>Routing</td><td>React Router DOM</td><td>Page navigation: /dashboard, /customers, /payment, /staff, /orders etc.</td></tr>
+    <tr><td>API Calls</td><td>Axios</td><td>Service files like customerService, paymentService, staffService, shoppingService</td></tr>
+    <tr><td>Charts/UI</td><td>Recharts, React Icons</td><td>Dashboard area chart, cards, icons, HRMS UI</td></tr>
+    <tr><td>Backend</td><td>Node.js, Express</td><td>REST APIs under /api/auth, /api/customers, /api/payments, /api/staff, /api/shopping etc.</td></tr>
+    <tr><td>Database</td><td>MySQL using mysql2</td><td>customers, payments, products, stock_movements, shopping_orders, staff, supplier_purchases</td></tr>
+    <tr><td>Security</td><td>bcryptjs, jsonwebtoken</td><td>Password hashing and login token generation</td></tr>
+  </table>
+
+  <h2>4. What I Worked On</h2>
+  <h3>Frontend Work</h3>
+  <ul>
+    <li>React pages banaye: Dashboard, Customers, Add Customer, Customer Details, Payment, Inventory, Shopping, Orders, Supplier, Staff, Reports, Settings.</li>
+    <li>React Router se page navigation configure kiya.</li>
+    <li>Sidebar based layout implement kiya.</li>
+    <li>Axios services banaye for customer, payment, staff, shopping, inventory and auth APIs.</li>
+    <li>Dashboard par customer count, total credit, total payment, pending amount, recent transactions, low stock alerts aur charts display kiye.</li>
+    <li>Staff module mein HRMS style UI banaya: registration, filters, list, profile, attendance entry/history, salary preview, document section and reports actions.</li>
+    <li>Forms mein client-side validations add kiye, jaise mobile number, email, salary, required fields.</li>
+  </ul>
+
+  <h3>Backend Work</h3>
+  <ul>
+    <li>Express server setup kiya with CORS and JSON middleware.</li>
+    <li>Module-wise REST routes and controllers create kiye.</li>
+    <li>Customer CRUD, customer history, customer product entries APIs implement kiye.</li>
+    <li>Payment APIs mein MySQL transaction use kiya, jisse payment add/update/delete ke time customer current balance correctly update hota hai.</li>
+    <li>Inventory/product APIs mein stock status, stock movement history, add/update/delete product logic implement kiya.</li>
+    <li>Shopping order APIs mein order create, order items insert, stock deduction, order cancel par stock restore logic implement kiya.</li>
+    <li>Staff APIs mein staff CRUD, summary, attendance, salary payment, advance payment and history APIs implement kiye.</li>
+    <li>Auth mein registration, login, bcrypt password hashing aur JWT token generation implement kiya.</li>
+  </ul>
+
+  <h3>Database Work</h3>
+  <ul>
+    <li>MySQL database use kiya. Database name code mein currently <strong>adesh</strong> configured hai.</li>
+    <li>Main tables: smartkhata_register_data, customers, customer_product_entries, payments, products, stock_movements, shopping_orders, shopping_order_items, suppliers, supplier_purchases, customer_credits, staff, staff_attendance, staff_salary_payments, staff_advances.</li>
+    <li>Controllers mein CREATE TABLE IF NOT EXISTS aur ALTER TABLE based auto schema setup bhi use hua hai.</li>
+    <li>Important calculations: customer current_balance, payment previous/current balance, supplier pending amount, inventory stock_qty, order line_total and total_amount.</li>
+  </ul>
+
+  <h2>5. Module Explanation</h2>
+  <table>
+    <tr><th>Module</th><th>Functionality</th><th>Important APIs/Tables</th></tr>
+    <tr><td>Authentication</td><td>User register/login, password hash, JWT token</td><td>/api/auth/register, /api/auth/login, smartkhata_register_data</td></tr>
+    <tr><td>Customer</td><td>Add/update/delete customers, product entries, customer history</td><td>/api/customers, customers, customer_product_entries</td></tr>
+    <tr><td>Payments</td><td>Payment add/update/delete, customer balance update, payment summary</td><td>/api/payments, payments, customers.current_balance</td></tr>
+    <tr><td>Inventory</td><td>Products, stock quantity, low stock, stock history</td><td>/api/inventory, products, stock_movements</td></tr>
+    <tr><td>Orders</td><td>Create shopping orders, order items, status update, stock deduction/restore</td><td>/api/shopping/orders, shopping_orders, shopping_order_items</td></tr>
+    <tr><td>Supplier</td><td>Supplier records and supplier purchase/debit tracking</td><td>/api/suppliers, /api/supplier-purchases, suppliers, supplier_purchases</td></tr>
+    <tr><td>Staff HRMS</td><td>Staff registration, filtering, attendance, salary/advance history</td><td>/api/staff, staff, staff_attendance, staff_salary_payments, staff_advances</td></tr>
+    <tr><td>Dashboard</td><td>Business overview, cards, charts, recent transactions, low stock alerts</td><td>Consumes customer, credit, payment, order and inventory APIs</td></tr>
+  </table>
+
+  <div class="page-break"></div>
+  <h2>6. Interview Questions And Answers</h2>
+
+  <div class="qa"><p class="q">Q1. Tell me about your SmartKhata project.</p><p class="a">SmartKhata ek full-stack business management application hai jo small retailers ke credit ledger, payment recovery, customer records, suppliers, inventory, shopping orders aur staff management ko handle karta hai. Isme React frontend, Express backend aur MySQL database use hua hai. Main isme frontend screens, API integration, backend REST APIs, database queries, validations aur balance/stock calculation logic par kaam karta hu.</p></div>
+
+  <div class="qa"><p class="q">Q2. What was your role in the project?</p><p class="a">Mera role full-stack developer ka tha. Frontend mein React pages, forms, dashboard, filters, reusable services aur API integration kiya. Backend mein Express routes/controllers, MySQL CRUD, authentication, payment transaction handling, inventory stock update aur staff attendance APIs implement kiye.</p></div>
+
+  <div class="qa"><p class="q">Q3. Why did you choose React for frontend?</p><p class="a">React component-based hai, isliye large UI ko pages/components mein divide karna easy hota hai. SmartKhata mein multiple modules hain, jaise Dashboard, Customers, Staff, Payment, Inventory, so React state management, conditional rendering aur reusable components useful rahe.</p></div>
+
+  <div class="qa"><p class="q">Q4. How frontend communicates with backend?</p><p class="a">Frontend Axios ke through backend REST APIs call karta hai. Example: customerService.js customers API call karta hai, paymentService.js payments API call karta hai, staffService.js staff APIs call karta hai. Base URL mostly http://localhost:5000/api hai.</p></div>
+
+  <div class="qa"><p class="q">Q5. Explain your backend architecture.</p><p class="a">Backend Node.js Express par based hai. server.js mein middleware aur routes register hain. Har module ka route file hai, jaise customerRoutes, paymentRoutes, staffRoutes. Business logic controllers mein hai. Database connection config/db.js mein mysql2 se createConnection ke through hota hai.</p></div>
+
+  <div class="qa"><p class="q">Q6. Which database did you use and why?</p><p class="a">MySQL use kiya because project mein structured relational data hai: customers, payments, orders, order items, products, suppliers and staff. In tables ke beech relations aur reporting queries ke liye SQL suitable hai.</p></div>
+
+  <div class="qa"><p class="q">Q7. How did you handle payment and customer balance?</p><p class="a">Payment add karte time backend customer ko SELECT ... FOR UPDATE se lock karta hai, previous_balance read karta hai, payment amount minus karke current_balance calculate karta hai, payment row insert karta hai aur customers table update karta hai. Ye operation MySQL transaction ke andar hota hai, so data consistency maintain hoti hai.</p></div>
+
+  <div class="qa"><p class="q">Q8. Why did you use database transactions?</p><p class="a">Payment aur order flow mein multiple database operations ek saath hote hain. Agar payment insert ho gaya but customer balance update fail hua to data mismatch hoga. Transaction se either all operations commit hote hain ya failure par rollback hota hai.</p></div>
+
+  <div class="qa"><p class="q">Q9. How does inventory stock update work?</p><p class="a">Products table mein stock_qty maintain hota hai. Product update ke time old stock aur new stock ka difference calculate karke stock_movements mein ADD/REDUCE record insert hota hai. Order create hone par product stock reduce hota hai, aur order cancel hone par stock restore hota hai.</p></div>
+
+  <div class="qa"><p class="q">Q10. What is the order flow?</p><p class="a">User shopping order create karta hai with customer name, mobile, pickup time and selected products. Backend product stock validate karta hai, shopping_orders mein order create karta hai, shopping_order_items insert karta hai, stock reduce karta hai and stock_movements mein ORDER entry add karta hai.</p></div>
+
+  <div class="qa"><p class="q">Q11. How did you implement authentication?</p><p class="a">Register API user data validate karti hai, duplicate email check karti hai, password bcrypt se hash karti hai aur DB mein save karti hai. Login API email se user fetch karti hai, bcrypt.compare se password verify karti hai and JWT token generate karti hai.</p></div>
+
+  <div class="qa"><p class="q">Q12. What validations did you add?</p><p class="a">Frontend par required fields, mobile number, email, salary, positive amount validations hain. Backend par amount greater than 0, valid date format, valid IDs, stock availability, paid amount cannot exceed total amount, customer/staff/product existence checks hain.</p></div>
+
+  <div class="qa"><p class="q">Q13. Explain Staff module.</p><p class="a">Staff module HRMS style hai. Isme staff registration, list, search, department/status filters, profile view, attendance entry, attendance history, salary dashboard, salary payment/advance backend APIs and report/export action buttons hain. Backend staff, staff_attendance, staff_salary_payments and staff_advances tables use karta hai.</p></div>
+
+  <div class="qa"><p class="q">Q14. What is the Dashboard doing?</p><p class="a">Dashboard multiple APIs se data fetch karta hai: customers, credits, payments, orders and inventory products. Ye total customers, total credit, total payment, pending balance, recent transactions, top products, low stock alerts and chart display karta hai.</p></div>
+
+  <div class="qa"><p class="q">Q15. How did you handle API errors?</p><p class="a">Backend controllers mein sendError helper use kiya gaya hai jisse consistent JSON response milta hai: success false and message. Frontend mein try/catch se error message display kiya jata hai, for example staff save failed ya backend/database check message.</p></div>
+
+  <div class="qa"><p class="q">Q16. What is the difference between PUT, POST, DELETE and GET in your project?</p><p class="a">GET data fetch ke liye, POST new record create ke liye, PUT existing record update ke liye, DELETE record remove ke liye use hua. Example: POST /api/staff adds staff, PUT /api/staff/:id updates staff, DELETE /api/staff/:id deletes staff, GET /api/staff fetches staff.</p></div>
+
+  <div class="qa"><p class="q">Q17. How did you design reusable services?</p><p class="a">Frontend mein API logic service files mein separate kiya. Components directly Axios URL hardcode na karein, isliye customerService, paymentService, staffService, shoppingService, inventoryService use kiye. Isse code maintainable hota hai.</p></div>
+
+  <div class="qa"><p class="q">Q18. How do you protect against SQL injection?</p><p class="a">Most queries parameterized placeholders ? ke through run hoti hain, jisme values array mein pass hoti hain. Is approach se user input directly SQL string mein concatenate nahi hota, so SQL injection risk reduce hota hai.</p></div>
+
+  <div class="qa"><p class="q">Q19. What challenges did you face?</p><p class="a">Main challenge balance and stock consistency tha. Payment add/update/delete ke time customer balance correctly maintain karna aur order cancel/reopen ke time stock restore/reduce karna important tha. Iske liye transactions, row locking, validations and stock_movements table use kiya.</p></div>
+
+  <div class="qa"><p class="q">Q20. What improvements are pending?</p><p class="a">Reports page and Settings page abhi placeholder stage mein hain. Transactions unified ledger API fully active nahi hai. Auth middleware and ProtectedRoute ko consistently apply karna hai. DB credentials ko .env mein move karna hai. Automated tests add karne hain.</p></div>
+
+  <div class="qa"><p class="q">Q21. How would you improve this project for production?</p><p class="a">DB credentials .env mein rakhunga, JWT secret environment variable se read karunga, protected routes apply karunga, input validation library like Joi/Zod use karunga, automated API tests add karunga, proper migrations create karunga, logging and deployment setup karunga.</p></div>
+
+  <div class="qa"><p class="q">Q22. What is bcrypt and why did you use it?</p><p class="a">bcrypt password hashing library hai. Plain password database mein store karna unsafe hota hai. Register ke time password hash hota hai and login ke time entered password hash se compare hota hai.</p></div>
+
+  <div class="qa"><p class="q">Q23. What is JWT?</p><p class="a">JWT ek token-based authentication mechanism hai. Login success hone ke baad backend token generate karta hai. Frontend token store karke protected APIs ke liye Authorization header mein bhej sakta hai.</p></div>
+
+  <div class="qa"><p class="q">Q24. What is useEffect used for in your React pages?</p><p class="a">useEffect data load karne ke liye use hota hai when page/component mounts. Example Dashboard load hote hi customers, payments, orders, products APIs call karta hai. Staff page load hote hi staff summary and staff list fetch karta hai.</p></div>
+
+  <div class="qa"><p class="q">Q25. What is useMemo used for?</p><p class="a">useMemo expensive derived calculations avoid karne ke liye use hota hai. Dashboard mein totals, filtered transactions, top products and low stock data derive hota hai. Staff page mein filtered/sorted staff list useMemo se calculate hoti hai.</p></div>
+
+  <div class="qa"><p class="q">Q26. Explain customer history feature.</p><p class="a">Customer history payments, customer product entries aur shopping order items ko combine karta hai. Backend separate queries run karke common format mein data map karta hai and date descending order mein return karta hai.</p></div>
+
+  <div class="qa"><p class="q">Q27. How do you calculate pending amount in product entry?</p><p class="a">Product entry mein total_amount = price * quantity hota hai. pending_amount = total_amount - paid_amount hota hai. Agar paid_amount total se zyada ho to backend validation error return karta hai.</p></div>
+
+  <div class="qa"><p class="q">Q28. How supplier purchase module works?</p><p class="a">Supplier purchase mein supplier_name, purchase_from, amount, paid_amount, bill_no, purchase_date, product_details and note save hote hain. pending_amount query mein amount - paid_amount se calculate hota hai. Summary total debit, paid and pending return karti hai.</p></div>
+
+  <div class="qa"><p class="q">Q29. What is your strongest contribution?</p><p class="a">Mera strongest contribution payment/balance and inventory/order flow hai, kyunki isme business-critical calculations hain. Maine API validation, transaction handling, current_balance update, stock deduction/restore and history tracking jaise logic par kaam kiya.</p></div>
+
+  <div class="qa"><p class="q">Q30. How will you explain 1.6 years experience honestly?</p><p class="a">“Mujhe 1.6 years ka hands-on experience hai full-stack development mein. Main React frontend, Node Express APIs, MySQL queries, CRUD operations, form validations, API integration and debugging mein comfortable hu. Main abhi complex architecture design independently seekh raha hu, but module-level development and issue fixing confidently handle karta hu.”</p></div>
+
+  <h2>7. Short Technical Revision</h2>
+  <ul>
+    <li><strong>React:</strong> Components, state, props, useEffect, useMemo, routing, forms.</li>
+    <li><strong>Node/Express:</strong> Middleware, routes, controllers, req/res, status codes.</li>
+    <li><strong>MySQL:</strong> CRUD, joins, transactions, aggregate queries, DATE_FORMAT, SELECT FOR UPDATE.</li>
+    <li><strong>API:</strong> GET/POST/PUT/PATCH/DELETE, JSON response, error handling.</li>
+    <li><strong>Security:</strong> bcrypt hashing, JWT token, environment variables, protected routes.</li>
+    <li><strong>Debugging:</strong> browser console, network tab, backend logs, database query errors.</li>
+  </ul>
+
+  <h2>8. Questions You Can Ask Interviewer</h2>
+  <ul>
+    <li>Team ka frontend/backend tech stack kya hai?</li>
+    <li>Project mein testing and code review process kaise follow hota hai?</li>
+    <li>Developers ko module ownership milta hai kya?</li>
+    <li>Database migrations and deployment ka process kya hai?</li>
+  </ul>
+
+  <h2>9. Final Pitch</h2>
+  <p>“SmartKhata project se mujhe real business workflows samajhne mile: credit ledger, payments, inventory, order stock, supplier debit and staff attendance. Main sirf UI banane tak limited nahi tha; maine backend APIs, MySQL queries, validation and business calculation logic bhi implement kiya. Isliye main junior to mid-level full-stack role mein quickly contribute kar sakta hu.”</p>
+</body>
+</html>

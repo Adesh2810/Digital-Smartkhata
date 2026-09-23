@@ -1,27 +1,113 @@
 // import { useTheme } from "../context/ThemeContext";
 import "./Settings.css";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { changePassword } from "../services/authService";
+import {
+  FiBriefcase,
+  FiCreditCard,
+  FiDatabase,
+  FiLock,
+  FiMapPin,
+  FiMoon,
+  FiPlus,
+  FiSettings,
+  FiShield,
+  FiSun,
+  FiUser,
+} from "react-icons/fi";
 function Settings() {
   // const { theme, setTheme } = useTheme();
-  const [themeMode, setThemeMode] = useState("light");
+  const navigate = useNavigate();
+  const [theme, setTheme] = useState("light");
   const [showBankForm, setShowBankForm] = useState(false);
   const [editing, setEditing] = useState(false);
   const [activeTab, setActiveTab] = useState("profile");
   const [profile, setProfile] = useState({
-  ownerName: "Shubham Rathod",
-  photo: "https://media.licdn.com/dms/image/v2/D4D22AQHINU3hM-Ik3w/feedshare-shrink_800/B4DZ4fisqIK4Ac-/0/1778645650325?e=1784160000&v=beta&t=brAVc0XtQYC_TsbEFRaltP5ZOGKnvR_mjcExmeXKe9I",
-  shopName: "Smart Khatabook",
-  email: "shubham054@gmail.com",
+  ownerName: "Adesh Rasal",
+  // photo: "https://media.licdn.com/dms/image/v2/D4D22AQHINU3hM-Ik3w/feedshare-shrink_800/B4DZ4fisqIK4Ac-/0/1778645650325?e=1784160000&v=beta&t=brAVc0XtQYC_TsbEFRaltP5ZOGKnvR_mjcExmeXKe9I",
+  shopName: "Smart Digital Khata",
+  email: "adeshrasal0909@gmail.com",
   mobile: "9876543210",
+  address: "Hinjwadi, Pune, Maharashtra",
+  aadhaar: "XXXX XXXX 1234",
+  city: "Pune",
 
   
 });
+
+  const [profileDraft, setProfileDraft] = useState(profile);
+  const savedUser = JSON.parse(localStorage.getItem("user") || "null");
+  const [securityForm, setSecurityForm] = useState({
+    email: savedUser?.email || "",
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+  const [isUpdatingSecurity, setIsUpdatingSecurity] = useState(false);
+
+  const openProfileEditor = () => {
+    setProfileDraft(profile);
+    setEditing(true);
+  };
+
+  const updateProfileDraft = (field, value) => {
+    setProfileDraft((current) => ({ ...current, [field]: value }));
+  };
+
+  const saveProfile = () => {
+    setProfile(profileDraft);
+    setEditing(false);
+  };
+
+  const updateSecurityForm = (field, value) => {
+    setSecurityForm((current) => ({ ...current, [field]: value }));
+  };
+
+  const updateSecurity = async () => {
+    if (
+      !securityForm.email ||
+      !securityForm.currentPassword ||
+      !securityForm.newPassword ||
+      !securityForm.confirmPassword
+    ) {
+      alert("Please fill all security fields.");
+      return;
+    }
+
+    if (securityForm.newPassword !== securityForm.confirmPassword) {
+      alert("New password and confirm password do not match.");
+      return;
+    }
+
+    try {
+      setIsUpdatingSecurity(true);
+      const response = await changePassword(securityForm);
+
+      alert(response.data.message);
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      navigate("/login", {
+        replace: true,
+        state: { email: securityForm.email },
+      });
+    } catch (error) {
+      if (!error.response) {
+        alert("Backend server is not running. Please start the backend on port 5000.");
+        return;
+      }
+
+      alert(error.response?.data?.message || "Security update failed");
+    } finally {
+      setIsUpdatingSecurity(false);
+    }
+  };
  
 
  const [banks, setBanks] = useState([
   {
     id: 1,
-    holder: "Shubham Rathod",
+    holder: "Adesh Rasal",
     bank: "HDFC Bank",
     account: "XXXX XXXX 4528",
     ifsc: "HDFC0001234",
@@ -78,7 +164,8 @@ function Settings() {
             
           <div className="settings-container">
             <div className="settings-header">
-              <h1>⚙️ Settings</h1>
+              <span className="settings-eyebrow">Control center</span>
+              <h1><FiSettings /> Settings</h1>
               <p>Manage your business preferences</p>
             </div>
 
@@ -90,14 +177,14 @@ function Settings() {
                       className={`setting-tab ${activeTab === "profile" ? "active" : ""}`}
                       onClick={() => setActiveTab("profile")}
                     >
-                      Profile
+                      <FiUser /> Profile
                     </button>
 
                     <button
                       className={`setting-tab ${activeTab === "payment" ? "active" : ""}`}
                       onClick={() => setActiveTab("payment")}
                     >
-                      Payment
+                      <FiCreditCard /> Payment
 
                     </button>
 
@@ -105,21 +192,21 @@ function Settings() {
                       className={`setting-tab ${activeTab === "security" ? "active" : ""}`}
                       onClick={() => setActiveTab("security")}
                     >
-                      Security
+                      <FiLock /> Security
                     </button>
 
                     <button
                       className={`setting-tab ${activeTab === "theme" ? "active" : ""}`}
                       onClick={() => setActiveTab("theme")}
                     >
-                      Theme
+                      <FiSun /> Theme
                     </button>
 
                     <button
                       className={`setting-tab ${activeTab === "backup" ? "active" : ""}`}
                       onClick={() => setActiveTab("backup")}
                     >
-                      Backup
+                      <FiDatabase /> Backup
                     </button>
 
                </div>     
@@ -133,61 +220,103 @@ function Settings() {
               <div className="profile-card">
               <div className="profile-top">
               <div className="profile-avatar">
-                      <img
-                        src={profile.photo}
-                        alt="Profile"
-                        className="profile-photo"
-                      />
+                      {profile.photo ? (
+                        <img
+                          src={profile.photo}
+                          alt="Profile"
+                          className="profile-photo"
+                        />
+                      ) : (
+                        <span className="profile-photo-fallback">
+                          {profile.ownerName.charAt(0)}
+                        </span>
+                      )}
                     </div>
 
               <div className="profile-main">
 
               <div className="profile-name-row">
-                  <h2>Shubham Rathod</h2>
+                  <h2>{profile.ownerName}</h2>
                     
                   </div>
 
               <div className="profile-tags">
-                <span>🏪 Smart Khatabook</span>
+                <span>🏪 Smart Digital Khata</span>
                 <span>OWNER</span>
                 <span>BUSINESS ACCOUNT</span>
+                <span className="profile-shop-name">{profile.shopName}</span>
               </div>
 
-              <div className="profile-address">
-                📍 Wagholi, Pune, Maharashtra
+              <div className="profile-address" data-address={profile.address}>
+                📍 Hinjwadi, Pune, Maharashtra
               </div>
 
             </div>
 
     <button
           className="edit-profile-btn"
-          onClick={() => setEditing(true)}
+          type="button"
+          onClick={editing ? saveProfile : openProfileEditor}
         >
-          Edit Profile
+          {editing ? "Save Profile" : "Edit Profile"}
     </button>
 
   </div>
+
+  {editing && (
+    <div className="profile-edit-form">
+      <div className="profile-edit-field">
+        <label htmlFor="profile-owner-name">Owner name</label>
+        <input id="profile-owner-name" value={profileDraft.ownerName} onChange={(event) => updateProfileDraft("ownerName", event.target.value)} />
+      </div>
+      <div className="profile-edit-field">
+        <label htmlFor="profile-shop-name">Business name</label>
+        <input id="profile-shop-name" value={profileDraft.shopName} onChange={(event) => updateProfileDraft("shopName", event.target.value)} />
+      </div>
+      <div className="profile-edit-field">
+        <label htmlFor="profile-email">Email</label>
+        <input id="profile-email" type="email" value={profileDraft.email} onChange={(event) => updateProfileDraft("email", event.target.value)} />
+      </div>
+      <div className="profile-edit-field">
+        <label htmlFor="profile-mobile">Phone</label>
+        <input id="profile-mobile" type="tel" value={profileDraft.mobile} onChange={(event) => updateProfileDraft("mobile", event.target.value)} />
+      </div>
+      <div className="profile-edit-field profile-edit-wide">
+        <label htmlFor="profile-address-input">Address</label>
+        <input id="profile-address-input" value={profileDraft.address} onChange={(event) => updateProfileDraft("address", event.target.value)} />
+      </div>
+      <div className="profile-edit-field">
+        <label htmlFor="profile-city">City</label>
+        <input id="profile-city" value={profileDraft.city} onChange={(event) => updateProfileDraft("city", event.target.value)} />
+      </div>
+      <div className="profile-edit-field">
+        <label htmlFor="profile-aadhaar">Aadhaar</label>
+        <input id="profile-aadhaar" value={profileDraft.aadhaar} onChange={(event) => updateProfileDraft("aadhaar", event.target.value)} />
+      </div>
+      <button className="cancel-profile-btn" type="button" onClick={() => setEditing(false)}>Cancel</button>
+    </div>
+  )}
 
   <div className="profile-bottom">
 
               <div className="info-box">
                 <h4>Email</h4>
-                <p>shubham054@gmail.com</p>
+                <p>{profile.email}</p>
               </div>
 
               <div className="info-box">
                 <h4>Phone</h4>
-                <p>9876543210</p>
+                <p>{profile.mobile}</p>
               </div>
 
               <div className="info-box">
                 <h4>Aadhaar</h4>
-                <p>XXXX XXXX 1234</p>
+                <p>{profile.aadhaar}</p>
               </div>
 
               <div className="info-box">
                 <h4>City</h4>
-                <p>Pune</p>
+                <p>{profile.city}</p>
               </div>
 
   </div>
@@ -418,6 +547,8 @@ function Settings() {
                 <input
                   type="email"
                   placeholder="Enter Login ID"
+                  value={securityForm.email}
+                  onChange={(event) => updateSecurityForm("email", event.target.value)}
                 />
               </div>
 
@@ -426,6 +557,8 @@ function Settings() {
                 <input
                   type="password"
                   placeholder="Current Password"
+                  value={securityForm.currentPassword}
+                  onChange={(event) => updateSecurityForm("currentPassword", event.target.value)}
                 />
               </div>
 
@@ -434,6 +567,8 @@ function Settings() {
                 <input
                   type="password"
                   placeholder="New Password"
+                  value={securityForm.newPassword}
+                  onChange={(event) => updateSecurityForm("newPassword", event.target.value)}
                 />
               </div>
 
@@ -442,14 +577,16 @@ function Settings() {
                 <input
                   type="password"
                   placeholder="Confirm Password"
+                  value={securityForm.confirmPassword}
+                  onChange={(event) => updateSecurityForm("confirmPassword", event.target.value)}
                 />
               </div>
 
             </div>
 
             <div className="settings-footer">
-              <button className="save-btn">
-                Update Security
+              <button className="save-btn" type="button" onClick={updateSecurity} disabled={isUpdatingSecurity}>
+                {isUpdatingSecurity ? "Updating..." : "Update Security"}
               </button>
             </div>
 
@@ -515,28 +652,10 @@ function Settings() {
 
                 )}
 
-
-                  <div className="feature-card">
-
-                      
-                  </div>
-
-                  <div className="feature-card">
-
-
-  </div>
-                         
-
 </div>
          
 </div>
 
-
-
-  <div className="settings-footer">
-
-  </div>
-            
 
   </div>
  );

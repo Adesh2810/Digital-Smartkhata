@@ -211,16 +211,6 @@ function Payment() {
           <p>Collections, recoveries, balances, and payment history</p>
         </div>
 
-        <button
-          className="new-payment-btn"
-          type="button"
-          onClick={() => {
-            resetForm();
-            window.scrollTo({ top: 0, behavior: "smooth" });
-          }}
-        >
-          New Payment
-        </button>
       </div>
 
       {(message || error) && (
@@ -460,14 +450,14 @@ function Payment() {
               ) : filteredPayments.length > 0 ? (
                 filteredPayments.map((payment) => (
                   <tr key={payment.id}>
-                    <td>{payment.customer_name}</td>
-                    <td className="green">{formatMoney(payment.amount)}</td>
-                    <td>{formatMoney(payment.previous_balance)}</td>
-                    <td className="pending">{formatMoney(payment.current_balance)}</td>
-                    <td>{formatDate(payment.payment_date)}</td>
-                    <td>{payment.payment_method || "Cash"}</td>
-                    <td>{payment.note || "-"}</td>
-                    <td>
+                    <td data-label="Customer">{payment.customer_name}</td>
+                    <td data-label="Amount" className="green">{formatMoney(payment.amount)}</td>
+                    <td data-label="Previous Balance">{formatMoney(payment.previous_balance)}</td>
+                    <td data-label="Current Balance" className="pending">{formatMoney(payment.current_balance)}</td>
+                    <td data-label="Date">{formatDate(payment.payment_date)}</td>
+                    <td data-label="Payment Mode">{payment.payment_method || "Cash"}</td>
+                    <td data-label="Note">{payment.note || "-"}</td>
+                    <td data-label="Action">
                       <div className="table-actions">
                         <button className="edit-btn" type="button" onClick={() => handleEdit(payment)}>
                           Edit

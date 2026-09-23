@@ -152,7 +152,7 @@ export const updateCustomerCredit = (req, res) => {
 };
 
 export const deleteCustomerCredit = (req, res) => {
-  const { id } = req.params;
+  const { id } = req.params;  
 
   if (!validateId(id)) {
     return sendError(res, "Invalid customer credit id", null, 400);

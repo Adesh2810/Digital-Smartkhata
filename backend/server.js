@@ -10,7 +10,7 @@ import supplierRoutes from "./routes/supplierRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
 import shoppingRoutes from "./routes/shoppingRoutes.js";
 import staffRoutes from "./routes/staffRoutes.js";
-import inventoryRoutes from "./routes/collectionRoutes.js";
+import inventoryRoutes from "./routes/inventoryRoutes.js";
 
 dotenv.config();
 
@@ -30,7 +30,6 @@ app.use("/api/payments", paymentRoutes);
 app.use("/api/shopping", shoppingRoutes);
 app.use("/api/staff", staffRoutes);
 app.use("/api/inventory", inventoryRoutes);
-app.use("/api/collections", inventoryRoutes);
 
 // Test Route
 app.get("/", (req, res) => {

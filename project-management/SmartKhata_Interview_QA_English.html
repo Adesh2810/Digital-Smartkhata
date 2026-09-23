@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>SmartKhata Interview Preparation Q&A - English</title>
+  <style>
+    @page { size: A4; margin: 18mm 16mm; }
+    body { font-family: Arial, sans-serif; color: #172033; line-height: 1.45; font-size: 12.5px; }
+    h1 { font-size: 28px; margin: 0 0 6px; color: #0f5132; }
+    h2 { font-size: 18px; margin: 22px 0 8px; color: #153e75; border-bottom: 1px solid #d9e2ec; padding-bottom: 4px; }
+    h3 { font-size: 14px; margin: 14px 0 5px; color: #243b53; }
+    p { margin: 5px 0; }
+    ul { margin: 6px 0 10px 18px; padding: 0; }
+    li { margin: 3px 0; }
+    .cover { border: 2px solid #0f5132; padding: 22px; margin-bottom: 16px; }
+    .tag { display: inline-block; background: #e6f4ea; color: #0f5132; padding: 4px 8px; border-radius: 4px; font-weight: bold; margin: 2px 4px 2px 0; }
+    .note { background: #f8fafc; border-left: 4px solid #2f80ed; padding: 10px 12px; margin: 10px 0; }
+    .qa { page-break-inside: avoid; margin: 10px 0 12px; }
+    .q { font-weight: bold; color: #111827; }
+    .a { margin-top: 3px; }
+    table { width: 100%; border-collapse: collapse; margin: 8px 0 12px; }
+    th, td { border: 1px solid #d9e2ec; padding: 7px; text-align: left; vertical-align: top; }
+    th { background: #f1f5f9; color: #102a43; }
+    .small { font-size: 11px; color: #52606d; }
+    .page-break { page-break-before: always; }
+  </style>
+</head>
+<body>
+  <section class="cover">
+    <h1>SmartKhata Interview Preparation</h1>
+    <p><strong>Candidate Experience:</strong> 1.6 years</p>
+    <p><strong>Project Type:</strong> Retail / credit ledger / inventory / staff management web application</p>
+    <p><strong>Prepared From:</strong> Current SmartKhata codebase analysis</p>
+    <p class="small">Use this document to explain your real project work confidently in interviews. The answers are written in clear English so you can speak naturally.</p>
+    <div>
+      <span class="tag">React</span><span class="tag">Vite</span><span class="tag">Node.js</span><span class="tag">Express</span>
+      <span class="tag">MySQL</span><span class="tag">Axios</span><span class="tag">JWT</span><span class="tag">Recharts</span>
+    </div>
+  </section>
+
+  <h2>1. Project Summary</h2>
+  <p><strong>SmartKhata</strong> is a business management web application built for small shops and retail businesses. It helps manage daily credit, payments, customer ledgers, supplier purchases, inventory, shopping orders, and staff records.</p>
+  <p>The main goal of this project is to provide a single dashboard where a shop owner can track customer outstanding balances, payment recovery, product stock, order status, supplier debit, and staff attendance/salary data.</p>
+
+  <h2>2. Best Self Introduction For This Project</h2>
+  <div class="note">
+    <p>“My current project is SmartKhata. It is a full-stack web application where I worked on React frontend, Node.js Express backend, and MySQL database. The business domain is retail credit ledger and inventory management. The project includes customer management, customer product entries, payments with balance updates, supplier purchase tracking, product inventory, shopping orders with stock deduction, dashboard analytics, authentication, and a staff HRMS module. On the frontend, I worked on reusable pages, forms, filters, dashboard charts, API integration using Axios, and responsive UI. On the backend, I implemented REST APIs, validations, MySQL CRUD operations, transaction handling, schema creation, balance calculations, and error handling.”</p>
+  </div>
+
+  <h2>3. Tech Stack</h2>
+  <table>
+    <tr><th>Layer</th><th>Technology</th><th>Where It Is Used</th></tr>
+    <tr><td>Frontend</td><td>React 19, Vite</td><td>Dashboard, Customers, Payments, Inventory, Shopping, Orders, Staff, Login/Register pages</td></tr>
+    <tr><td>Routing</td><td>React Router DOM</td><td>Page navigation: /dashboard, /customers, /payment, /staff, /orders, etc.</td></tr>
+    <tr><td>API Calls</td><td>Axios</td><td>Service files such as customerService, paymentService, staffService, shoppingService</td></tr>
+    <tr><td>Charts/UI</td><td>Recharts, React Icons</td><td>Dashboard area chart, cards, icons, HRMS UI</td></tr>
+    <tr><td>Backend</td><td>Node.js, Express</td><td>REST APIs under /api/auth, /api/customers, /api/payments, /api/staff, /api/shopping, etc.</td></tr>
+    <tr><td>Database</td><td>MySQL using mysql2</td><td>customers, payments, products, stock_movements, shopping_orders, staff, supplier_purchases</td></tr>
+    <tr><td>Security</td><td>bcryptjs, jsonwebtoken</td><td>Password hashing and login token generation</td></tr>
+  </table>
+
+  <h2>4. What I Worked On</h2>
+  <h3>Frontend Work</h3>
+  <ul>
+    <li>Created React pages such as Dashboard, Customers, Add Customer, Customer Details, Payment, Inventory, Shopping, Orders, Supplier, Staff, Reports, and Settings.</li>
+    <li>Configured page navigation using React Router.</li>
+    <li>Implemented a sidebar-based application layout.</li>
+    <li>Created Axios service files for customer, payment, staff, shopping, inventory, and authentication APIs.</li>
+    <li>Built dashboard views for customer count, total credit, total payment, pending amount, recent transactions, low stock alerts, and charts.</li>
+    <li>Built an HRMS-style Staff module with registration, filters, staff list, profile, attendance entry/history, salary preview, document section, and report actions.</li>
+    <li>Added client-side form validations for mobile number, email, salary, and required fields.</li>
+  </ul>
+
+  <h3>Backend Work</h3>
+  <ul>
+    <li>Set up the Express server with CORS and JSON middleware.</li>
+    <li>Created module-wise REST routes and controllers.</li>
+    <li>Implemented APIs for customer CRUD, customer history, and customer product entries.</li>
+    <li>Used MySQL transactions in payment APIs so customer current balance updates correctly during payment add/update/delete operations.</li>
+    <li>Implemented product inventory APIs including stock status, stock movement history, and add/update/delete product logic.</li>
+    <li>Implemented shopping order APIs with order creation, order item insertion, stock deduction, and stock restore logic on order cancellation.</li>
+    <li>Implemented staff APIs for staff CRUD, summary, attendance, salary payment, advance payment, and history.</li>
+    <li>Implemented authentication with registration, login, bcrypt password hashing, and JWT token generation.</li>
+  </ul>
+
+  <h3>Database Work</h3>
+  <ul>
+    <li>Used MySQL as the database. The current database configured in code is <strong>adesh</strong>.</li>
+    <li>Main tables include smartkhata_register_data, customers, customer_product_entries, payments, products, stock_movements, shopping_orders, shopping_order_items, suppliers, supplier_purchases, customer_credits, staff, staff_attendance, staff_salary_payments, and staff_advances.</li>
+    <li>The project uses CREATE TABLE IF NOT EXISTS and ALTER TABLE based schema setup inside some controllers.</li>
+    <li>Important calculations include customer current_balance, payment previous/current balance, supplier pending amount, inventory stock_qty, order line_total, and order total_amount.</li>
+  </ul>
+
+  <h2>5. Module Explanation</h2>
+  <table>
+    <tr><th>Module</th><th>Functionality</th><th>Important APIs/Tables</th></tr>
+    <tr><td>Authentication</td><td>User registration/login, password hash, JWT token</td><td>/api/auth/register, /api/auth/login, smartkhata_register_data</td></tr>
+    <tr><td>Customer</td><td>Add/update/delete customers, product entries, customer history</td><td>/api/customers, customers, customer_product_entries</td></tr>
+    <tr><td>Payments</td><td>Payment add/update/delete, customer balance update, payment summary</td><td>/api/payments, payments, customers.current_balance</td></tr>
+    <tr><td>Inventory</td><td>Products, stock quantity, low stock, stock history</td><td>/api/inventory, products, stock_movements</td></tr>
+    <tr><td>Orders</td><td>Create shopping orders, order items, status update, stock deduction/restore</td><td>/api/shopping/orders, shopping_orders, shopping_order_items</td></tr>
+    <tr><td>Supplier</td><td>Supplier records and supplier purchase/debit tracking</td><td>/api/suppliers, /api/supplier-purchases, suppliers, supplier_purchases</td></tr>
+    <tr><td>Staff HRMS</td><td>Staff registration, filtering, attendance, salary/advance history</td><td>/api/staff, staff, staff_attendance, staff_salary_payments, staff_advances</td></tr>
+    <tr><td>Dashboard</td><td>Business overview, cards, charts, recent transactions, low stock alerts</td><td>Consumes customer, credit, payment, order, and inventory APIs</td></tr>
+  </table>
+
+  <div class="page-break"></div>
+  <h2>6. Interview Questions And Answers</h2>
+
+  <div class="qa"><p class="q">Q1. Tell me about your SmartKhata project.</p><p class="a">SmartKhata is a full-stack business management application for small retailers. It manages credit ledgers, payment recovery, customer records, suppliers, inventory, shopping orders, and staff management. It uses React for the frontend, Express for the backend, and MySQL for the database. I worked on frontend screens, API integration, backend REST APIs, database queries, validations, and balance/stock calculation logic.</p></div>
+
+  <div class="qa"><p class="q">Q2. What was your role in the project?</p><p class="a">My role was full-stack developer. On the frontend, I worked on React pages, forms, dashboard, filters, reusable services, and API integration. On the backend, I worked on Express routes/controllers, MySQL CRUD operations, authentication, payment transaction handling, inventory stock updates, and staff attendance APIs.</p></div>
+
+  <div class="qa"><p class="q">Q3. Why did you choose React for the frontend?</p><p class="a">React is component-based, so it is easy to divide a large UI into pages and components. SmartKhata has many modules like Dashboard, Customers, Staff, Payment, and Inventory, so React state management, conditional rendering, and reusable components were useful.</p></div>
+
+  <div class="qa"><p class="q">Q4. How does the frontend communicate with the backend?</p><p class="a">The frontend calls backend REST APIs using Axios. For example, customerService.js calls customer APIs, paymentService.js calls payment APIs, and staffService.js calls staff APIs. The common backend base URL is mostly http://localhost:5000/api.</p></div>
+
+  <div class="qa"><p class="q">Q5. Explain your backend architecture.</p><p class="a">The backend is based on Node.js and Express. server.js registers middleware and routes. Each module has a route file, such as customerRoutes, paymentRoutes, and staffRoutes. The business logic is written in controllers. The database connection is created in config/db.js using mysql2.</p></div>
+
+  <div class="qa"><p class="q">Q6. Which database did you use and why?</p><p class="a">I used MySQL because the project has structured relational data such as customers, payments, orders, order items, products, suppliers, and staff. SQL is suitable for relationships, reporting queries, and financial calculations.</p></div>
+
+  <div class="qa"><p class="q">Q7. How did you handle payment and customer balance?</p><p class="a">When a payment is added, the backend locks the customer row using SELECT ... FOR UPDATE, reads the previous balance, subtracts the payment amount, inserts a payment record, and updates the customer current_balance. This operation runs inside a MySQL transaction to maintain data consistency.</p></div>
+
+  <div class="qa"><p class="q">Q8. Why did you use database transactions?</p><p class="a">Payment and order flows contain multiple database operations. If a payment is inserted but the customer balance update fails, data becomes inconsistent. With transactions, all operations are committed together, or if any step fails, everything is rolled back.</p></div>
+
+  <div class="qa"><p class="q">Q9. How does inventory stock update work?</p><p class="a">The products table maintains stock_qty. During product update, the system calculates the difference between old stock and new stock and inserts an ADD or REDUCE record into stock_movements. When an order is created, stock is reduced. When an order is cancelled, stock is restored.</p></div>
+
+  <div class="qa"><p class="q">Q10. What is the order flow?</p><p class="a">The user creates a shopping order with customer name, mobile number, pickup time, and selected products. The backend validates product stock, creates a record in shopping_orders, inserts records in shopping_order_items, reduces stock, and adds ORDER entries in stock_movements.</p></div>
+
+  <div class="qa"><p class="q">Q11. How did you implement authentication?</p><p class="a">The register API validates user data, checks duplicate email, hashes the password using bcrypt, and saves the user in the database. The login API fetches the user by email, verifies the password using bcrypt.compare, and generates a JWT token on successful login.</p></div>
+
+  <div class="qa"><p class="q">Q12. What validations did you add?</p><p class="a">On the frontend, I added validations for required fields, mobile number, email, and salary. On the backend, I added validations for positive amount, valid date format, valid IDs, stock availability, paid amount not exceeding total amount, and existence checks for customer, staff, and product.</p></div>
+
+  <div class="qa"><p class="q">Q13. Explain the Staff module.</p><p class="a">The Staff module is an HRMS-style module. It includes staff registration, list, search, department/status filters, profile view, attendance entry, attendance history, salary dashboard, salary payment/advance backend APIs, and report/export action buttons. The backend uses staff, staff_attendance, staff_salary_payments, and staff_advances tables.</p></div>
+
+  <div class="qa"><p class="q">Q14. What does the Dashboard do?</p><p class="a">The Dashboard fetches data from multiple APIs: customers, credits, payments, orders, and inventory products. It displays total customers, total credit, total payment, pending balance, recent transactions, top products, low stock alerts, and charts.</p></div>
+
+  <div class="qa"><p class="q">Q15. How did you handle API errors?</p><p class="a">Backend controllers use a sendError helper to return consistent JSON responses with success false and a message. On the frontend, try/catch blocks display useful error messages, such as staff save failed or backend/database check message.</p></div>
+
+  <div class="qa"><p class="q">Q16. What is the difference between PUT, POST, DELETE, and GET in your project?</p><p class="a">GET is used to fetch data, POST is used to create a new record, PUT is used to update an existing record, and DELETE is used to remove a record. For example, POST /api/staff adds staff, PUT /api/staff/:id updates staff, DELETE /api/staff/:id deletes staff, and GET /api/staff fetches staff.</p></div>
+
+  <div class="qa"><p class="q">Q17. How did you design reusable services?</p><p class="a">I separated API logic into frontend service files. Components do not need to directly hardcode every Axios URL. Instead, customerService, paymentService, staffService, shoppingService, and inventoryService are used. This makes the code more maintainable.</p></div>
+
+  <div class="qa"><p class="q">Q18. How do you protect against SQL injection?</p><p class="a">Most queries use parameterized placeholders like ?. Values are passed separately in an array. This avoids directly concatenating user input into SQL strings and reduces SQL injection risk.</p></div>
+
+  <div class="qa"><p class="q">Q19. What challenges did you face?</p><p class="a">The main challenge was maintaining balance and stock consistency. During payment add/update/delete, customer balance must remain correct. During order cancellation or reopening, stock must be restored or reduced correctly. I handled this using transactions, row locking, validations, and stock_movements history.</p></div>
+
+  <div class="qa"><p class="q">Q20. What improvements are pending?</p><p class="a">The Reports page and Settings page are still in placeholder stage. The unified Transactions ledger API is not fully active. Auth middleware and ProtectedRoute need to be applied consistently. Database credentials should be moved to .env. Automated tests should also be added.</p></div>
+
+  <div class="qa"><p class="q">Q21. How would you improve this project for production?</p><p class="a">I would move database credentials to .env, read the JWT secret from environment variables, apply protected routes, use an input validation library like Joi or Zod, add automated API tests, create proper database migrations, improve logging, and set up deployment.</p></div>
+
+  <div class="qa"><p class="q">Q22. What is bcrypt and why did you use it?</p><p class="a">bcrypt is a password hashing library. Storing plain passwords in the database is unsafe. During registration, the password is hashed, and during login, the entered password is compared with the stored hash.</p></div>
+
+  <div class="qa"><p class="q">Q23. What is JWT?</p><p class="a">JWT is a token-based authentication mechanism. After successful login, the backend generates a token. The frontend can store this token and send it in the Authorization header while calling protected APIs.</p></div>
+
+  <div class="qa"><p class="q">Q24. What is useEffect used for in your React pages?</p><p class="a">useEffect is used to load data when a page or component mounts. For example, the Dashboard calls customers, payments, orders, and products APIs when it loads. The Staff page fetches staff summary and staff list when it loads.</p></div>
+
+  <div class="qa"><p class="q">Q25. What is useMemo used for?</p><p class="a">useMemo is used to avoid recalculating expensive derived data on every render. In the Dashboard, totals, filtered transactions, top products, and low stock data are derived using memoized calculations. In the Staff page, the filtered/sorted staff list is calculated using useMemo.</p></div>
+
+  <div class="qa"><p class="q">Q26. Explain the customer history feature.</p><p class="a">Customer history combines payments, customer product entries, and shopping order items. The backend runs separate queries, maps the data into a common format, combines the results, and returns them sorted by date in descending order.</p></div>
+
+  <div class="qa"><p class="q">Q27. How do you calculate pending amount in a product entry?</p><p class="a">In a product entry, total_amount = price * quantity. pending_amount = total_amount - paid_amount. If the paid amount is greater than the total amount, the backend returns a validation error.</p></div>
+
+  <div class="qa"><p class="q">Q28. How does the supplier purchase module work?</p><p class="a">Supplier purchase stores supplier_name, purchase_from, amount, paid_amount, bill_no, purchase_date, product_details, and note. pending_amount is calculated in the query as amount - paid_amount. The summary API returns total debit, total paid, and total pending.</p></div>
+
+  <div class="qa"><p class="q">Q29. What is your strongest contribution?</p><p class="a">My strongest contribution is the payment/balance and inventory/order flow because these contain business-critical calculations. I worked on API validation, transaction handling, current_balance update, stock deduction/restore, and history tracking.</p></div>
+
+  <div class="qa"><p class="q">Q30. How will you explain 1.6 years of experience honestly?</p><p class="a">“I have 1.6 years of hands-on experience in full-stack development. I am comfortable with React frontend, Node Express APIs, MySQL queries, CRUD operations, form validations, API integration, and debugging. I am still learning complex architecture design independently, but I can confidently handle module-level development and issue fixing.”</p></div>
+
+  <h2>7. Short Technical Revision</h2>
+  <ul>
+    <li><strong>React:</strong> Components, state, props, useEffect, useMemo, routing, forms.</li>
+    <li><strong>Node/Express:</strong> Middleware, routes, controllers, req/res, status codes.</li>
+    <li><strong>MySQL:</strong> CRUD, joins, transactions, aggregate queries, DATE_FORMAT, SELECT FOR UPDATE.</li>
+    <li><strong>API:</strong> GET/POST/PUT/PATCH/DELETE, JSON response, error handling.</li>
+    <li><strong>Security:</strong> bcrypt hashing, JWT token, environment variables, protected routes.</li>
+    <li><strong>Debugging:</strong> Browser console, network tab, backend logs, database query errors.</li>
+  </ul>
+
+  <h2>8. Questions You Can Ask The Interviewer</h2>
+  <ul>
+    <li>What frontend and backend tech stack does your team use?</li>
+    <li>How does your team follow testing and code review processes?</li>
+    <li>Do developers get module ownership?</li>
+    <li>What is your process for database migrations and deployment?</li>
+  </ul>
+
+  <h2>9. Final Pitch</h2>
+  <p>“Through the SmartKhata project, I learned real business workflows such as credit ledger, payments, inventory, order stock, supplier debit, and staff attendance. I was not limited to UI work only; I also implemented backend APIs, MySQL queries, validations, and business calculation logic. Because of this experience, I can quickly contribute to a junior to mid-level full-stack role.”</p>
+</body>
+</html>

@@ -8,7 +8,7 @@ import {
   updateSupplierPurchase,
   deleteSupplierPurchase,
   getSupplierPurchaseSummary,
-} from "./supplierService";
+} from "../services/supplierService";
 
 const emptySupplierForm = {
   supplier_name: "",

@@ -4,9 +4,8 @@ import {
   FiBox,
   FiFilter,
   FiPackage,
-  FiPlusCircle,
-  FiSave,
   FiSearch,
+  FiSave,
   FiShoppingCart,
   FiTrash2,
   FiX,
@@ -342,8 +341,8 @@ function Shopping() {
               </button>
             )}
             <button className="product-submit-btn" type="submit" form="product-admin-form" disabled={saving}>
-              {editingId ? <FiSave /> : <FiPlusCircle />}
-              {saving ? "Saving..." : editingId ? "Update Product" : "Add Product"}
+              <FiSave />
+              {saving ? "Saving..." : editingId ? "Update Product" : "Save Product"}
             </button>
           </div>
         </div>

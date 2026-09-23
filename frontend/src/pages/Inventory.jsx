@@ -6,7 +6,6 @@ import {
   FiEdit2,
   FiFilter,
   FiImage,
-  FiPlus,
   FiRefreshCw,
   FiSearch,
   FiTrendingUp,
@@ -467,7 +466,6 @@ function Inventory() {
           </div>
           <div className="table-head-actions">
             <button type="button" onClick={loadInventory}><FiRefreshCw /> Refresh</button>
-            <button type="button" onClick={resetProductForm}><FiPlus /> New Product</button>
           </div>
         </div>
         <div className="collection-table-wrap">

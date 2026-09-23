@@ -24,6 +24,7 @@ function Sidebar({ children }) {
   const closeSidebar = () => setIsOpen(false);
 
   const handleLogout = () => {
+    localStorage.removeItem("token");
     localStorage.removeItem("user");
     closeSidebar();
     navigate("/login");
@@ -33,10 +34,14 @@ function Sidebar({ children }) {
     <div className="app-layout">
       <aside className={isOpen ? "app-sidebar open" : "app-sidebar"}>
         <div className="sidebar-brand">
+          <span className="brand-mark">SK</span>
           <div>
             <h2>KhataBook</h2>
             <p>Business Desk</p>
           </div>
+          <button className="sidebar-close-btn" type="button" onClick={closeSidebar} aria-label="Close sidebar">
+            <FiX />
+          </button>
         </div>
 
         <nav className="sidebar-nav">

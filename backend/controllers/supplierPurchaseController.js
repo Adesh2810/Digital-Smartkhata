@@ -67,6 +67,18 @@ db.query(`
   )
 `);
 
+db.query(`
+  CREATE TABLE IF NOT EXISTS supplier (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    supplier_name VARCHAR(100) NOT NULL,
+    amount DECIMAL(10, 2) NOT NULL,
+    bill_no VARCHAR(50),
+    purchase_date DATE,
+    note TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  )
+`);
+
 const ensureSupplierPurchaseColumn = (name, definition) => {
   db.query("SHOW COLUMNS FROM supplier_purchases LIKE ?", [name], (err, rows) => {
     if (err || rows.length > 0) return;
@@ -82,6 +94,36 @@ const ensureSupplierPurchaseColumn = (name, definition) => {
 ensureSupplierPurchaseColumn("purchase_from", "VARCHAR(120)");
 ensureSupplierPurchaseColumn("paid_amount", "DECIMAL(12, 2) DEFAULT 0");
 ensureSupplierPurchaseColumn("product_details", "TEXT");
+
+const syncSupplierRow = ({ id, supplier_name, amount, bill_no, purchase_date, note }, callback = () => {}) => {
+  const sql = `
+    INSERT INTO supplier (id, supplier_name, amount, bill_no, purchase_date, note)
+    VALUES (?, ?, ?, ?, ?, ?)
+    ON DUPLICATE KEY UPDATE
+      supplier_name = VALUES(supplier_name),
+      amount = VALUES(amount),
+      bill_no = VALUES(bill_no),
+      purchase_date = VALUES(purchase_date),
+      note = VALUES(note)
+  `;
+
+  db.query(
+    sql,
+    [
+      id,
+      String(supplier_name).trim().slice(0, 100),
+      amount,
+      String(bill_no || "").trim().slice(0, 50),
+      purchase_date,
+      String(note || "").trim(),
+    ],
+    callback
+  );
+};
+
+const deleteSupplierRow = (id, callback = () => {}) => {
+  db.query("DELETE FROM supplier WHERE id = ?", [id], callback);
+};
 
 export const getSupplierPurchaseSummary = (req, res) => {
   const sql = `
@@ -152,10 +194,23 @@ export const addSupplierPurchase = (req, res) => {
         return sendError(res, "Purchase save failed", err);
       }
 
-      res.status(201).json({
-        success: true,
-        message: "Purchase added successfully",
+      syncSupplierRow({
         id: result.insertId,
+        supplier_name,
+        amount,
+        bill_no,
+        purchase_date: normalizedPurchaseDate,
+        note,
+      }, (syncErr) => {
+        if (syncErr) {
+          return sendError(res, "Purchase saved, but supplier table sync failed", syncErr);
+        }
+
+        res.status(201).json({
+          success: true,
+          message: "Purchase added successfully",
+          id: result.insertId,
+        });
       });
     }
   );
@@ -243,9 +298,22 @@ export const updateSupplierPurchase = (req, res) => {
         return sendError(res, "Purchase not found", null, 404);
       }
 
-      res.status(200).json({
-        success: true,
-        message: "Purchase updated successfully",
+      syncSupplierRow({
+        id,
+        supplier_name,
+        amount,
+        bill_no,
+        purchase_date: normalizedPurchaseDate,
+        note,
+      }, (syncErr) => {
+        if (syncErr) {
+          return sendError(res, "Purchase updated, but supplier table sync failed", syncErr);
+        }
+
+        res.status(200).json({
+          success: true,
+          message: "Purchase updated successfully",
+        });
       });
     }
   );
@@ -267,9 +335,15 @@ export const deleteSupplierPurchase = (req, res) => {
       return sendError(res, "Purchase not found", null, 404);
     }
 
-    res.status(200).json({
-      success: true,
-      message: "Purchase deleted successfully",
+    deleteSupplierRow(id, (syncErr) => {
+      if (syncErr) {
+        return sendError(res, "Purchase deleted, but supplier table sync failed", syncErr);
+      }
+
+      res.status(200).json({
+        success: true,
+        message: "Purchase deleted successfully",
+      });
     });
   });
 };
